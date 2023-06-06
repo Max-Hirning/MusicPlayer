@@ -1,23 +1,27 @@
-import React from "react";
-import { Colors } from "react-native/Libraries/NewAppScreen";
-import { SafeAreaView, StatusBar, useColorScheme, Text } from "react-native";
+import Main from "./src/views/Main/Main";
+import React, { ReactElement } from "react";
+import PlayerContainer from "./src/views/PlayerContainer";
+import { darkTheme, lightTheme } from "./src/models/theme/theme";
+import { SafeAreaView, StatusBar, View, useColorScheme } from "react-native";
 
-function App(): JSX.Element {
+export default function App(): ReactElement {
 	const isDarkMode = useColorScheme() === "dark";
 
 	const backgroundStyle = {
-		backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+		backgroundColor: isDarkMode ? darkTheme.background : lightTheme.background,
 	};
 
 	return (
-		<SafeAreaView style={backgroundStyle}>
+		<View
+			className="flex-1"
+			style={[backgroundStyle]}
+		>
 			<StatusBar
-				barStyle={isDarkMode ? "light-content" : "dark-content"}
 				backgroundColor={backgroundStyle.backgroundColor}
+				barStyle={isDarkMode ? "light-content" : "dark-content"}
 			/>
-			<Text style={{fontFamily: "Poppins-ExtraBold"}}>sdvsdvsd</Text>
-		</SafeAreaView>
+			<Main/>
+			<PlayerContainer/>
+		</View>
 	);
 }
-
-export default App;
