@@ -1,8 +1,8 @@
 import React, { ReactElement } from "react";
 import { styles } from "../../models/theme/styles";
 import { sortsTypes } from "../../models/sortsTypes";
-import { FlatList, Text, TouchableOpacity } from "react-native";
 import { lightTheme } from "../../models/theme/theme";
+import { FlatList, Text, TouchableOpacity } from "react-native";
 
 export default function SortTypesList(): ReactElement {
 	return (
