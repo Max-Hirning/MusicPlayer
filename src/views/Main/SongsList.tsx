@@ -4,7 +4,7 @@ import { styles } from "../../models/theme/styles";
 import { lightTheme } from "../../models/theme/theme";
 import { View, FlatList, Text, Image, TouchableOpacity } from "react-native";
 
-const songs = [
+const songs: any = [
 	{
 		url: require("../../../leva-eternity-149473.mp3"), // Load media from the network
 		title: "Avaritia",

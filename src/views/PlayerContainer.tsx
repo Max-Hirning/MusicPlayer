@@ -1,4 +1,4 @@
-import Play from "../icons/play";
+// import Play from "../icons/play";
 import Pause from "../icons/pause";
 import React, { ReactElement } from "react";
 import ChevronLeft from "../icons/chevronLeft";
