@@ -18,8 +18,10 @@ export const songSlice = createSlice({
 	initialState,
 	reducers: {
 		setSong: (state: IActiveSong, { payload }: PayloadAction<ISong>): IActiveSong => {
-			state.data = payload;
-			state.exists = true;
+			if (payload) {
+				state.data = payload;
+				state.exists = true;
+			}
 			return state;
 		},
 	},

@@ -1,22 +1,23 @@
 import SongsList from "./SongsList";
-import { View, Button } from "react-native";
+import { View } from "react-native";
 import SortTypesList from "./SortTypesList";
-import React, { ReactElement, useEffect } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useSetSongsList } from "../../controllers/hooks/useSetSongsList";
+// import { Button } from "react-native";
+import React, { ReactElement } from "react";
+import PlayerContainer from "../PlayerContainer";
+// import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Main(): ReactElement {
-	const setSongsList = useSetSongsList();
-
-	useEffect(() => {
-		setSongsList();
-	}, [setSongsList]);
-
 	return (
-		<View>
-			<SortTypesList/>
-			<Button title="reset" onPress={() => AsyncStorage.removeItem("songs")} />
-			<SongsList/>
+		<View className="flex-1">
+			<View>
+				<SortTypesList/>
+				{/* <Button title="reset" onPress={() => {
+					AsyncStorage.removeItem("song");
+					AsyncStorage.removeItem("songs");
+				}} /> */}
+				<SongsList/>
+			</View>
+			<PlayerContainer/>
 		</View>
 	);
 }

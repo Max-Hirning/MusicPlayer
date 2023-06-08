@@ -1,17 +1,21 @@
-// import Play from "../icons/play";
-import Pause from "../icons/pause";
 import { useSelector } from "react-redux";
 import React, { ReactElement } from "react";
-import ChevronLeft from "../icons/chevronLeft";
 import { styles } from "../models/theme/styles";
 import { RootState } from "../types/redux/store";
-import ChevronRight from "../icons/chevronRight";
 import { lightTheme } from "../models/theme/theme";
-import { IActiveSong } from "../controllers/redux/activeSong";
+import SongController from "./Reusable/SongController";
+import { IActiveSong } from "../controllers/redux/song";
+import { useNavigation } from "@react-navigation/native";
+import { ScreenNavigationProp } from "../types/navigation";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 
 export default function PlayerContainer(): ReactElement {
+	const navigation = useNavigation<ScreenNavigationProp>();
 	const { data, exists }: IActiveSong = useSelector((state: RootState) => state.song);
+
+	const openSongPage = (): void => {
+		navigation.push("Song");
+	};
 
 	const getText = (text: string): string => {
 		if (text.length >= 18) {return `${text.slice(0, 18)}...`;}
@@ -21,6 +25,7 @@ export default function PlayerContainer(): ReactElement {
 	if (exists) {
 		return (
 			<TouchableOpacity
+				onPress={openSongPage}
 				style={{backgroundColor: lightTheme.playerBackground}}
 				className="absolute bottom-0 flex flex-row items-center px-4 py-3 justify-between w-full rounded-t-xl"
 			>
@@ -34,28 +39,8 @@ export default function PlayerContainer(): ReactElement {
 						{(data.album.length !== 0) && <Text style={[styles.fontFamilyText, {color: lightTheme.text}]}>{getText(data.album)}</Text>}
 					</View>
 				</View>
-				<View className="flex flex-row items-center">
-					<TouchableOpacity>
-						<ChevronLeft
-							width={30}
-							height={30}
-							color={lightTheme.icon}
-						/>
-					</TouchableOpacity>
-					<TouchableOpacity className="mx-2">
-						<Pause
-							width={30}
-							height={30}
-							color={lightTheme.icon}
-						/>
-					</TouchableOpacity>
-					<TouchableOpacity>
-						<ChevronRight
-							width={30}
-							height={30}
-							color={lightTheme.icon}
-						/>
-					</TouchableOpacity>
+				<View className="w-28">
+					<SongController itemSize={30}/>
 				</View>
 			</TouchableOpacity>
 		);

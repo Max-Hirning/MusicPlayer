@@ -1,9 +1,9 @@
 import { Provider } from "react-redux";
-import Main from "./src/views/Main/Main";
+import Navigation from "./src/views/Navigation";
 import { store } from "./src/controllers/redux/store";
 import React, { ReactElement, useEffect } from "react";
-import PlayerContainer from "./src/views/PlayerContainer";
-import { StatusBar, View, useColorScheme } from "react-native";
+import { StatusBar, useColorScheme } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
 import { darkTheme, lightTheme } from "./src/models/theme/theme";
 import { checkGetPermmisionForStorageReading } from "./src/controllers/permissions";
 
@@ -18,15 +18,16 @@ export default function App(): ReactElement {
 	}, []);
 
 	return (
-		<Provider store={store}>
-			<View style={[backgroundStyle, { flex: 1 }]}>
-				<StatusBar
-					backgroundColor={backgroundStyle.backgroundColor}
-					barStyle={isDarkMode ? "light-content" : "dark-content"}
-				/>
-				<Main/>
-				<PlayerContainer/>
-			</View>
-		</Provider>
+		<NavigationContainer>
+			<Provider store={store}>
+				<>
+					<StatusBar
+						backgroundColor={backgroundStyle.backgroundColor}
+						barStyle={isDarkMode ? "light-content" : "dark-content"}
+					/>
+					<Navigation/>
+				</>
+			</Provider>
+		</NavigationContainer>
 	);
 }

@@ -1,4 +1,4 @@
-import { ISong } from "../../controllers/redux/activeSong";
+import { ISong } from "../../types/redux/song";
 
 export const song: ISong = {
 	url: "",

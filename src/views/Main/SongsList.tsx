@@ -4,7 +4,7 @@ import { ISong } from "../../types/redux/song";
 import { styles } from "../../models/theme/styles";
 import { lightTheme } from "../../models/theme/theme";
 import { useSelector, useDispatch } from "react-redux";
-import { setSong } from "../../controllers/redux/activeSong";
+import { setSong } from "../../controllers/redux/song";
 import { AppDispatch, RootState } from "../../types/redux/store";
 import { View, FlatList, Text, Image, TouchableOpacity } from "react-native";
 
