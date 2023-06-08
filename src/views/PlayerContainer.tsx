@@ -2,15 +2,17 @@ import { useSelector } from "react-redux";
 import React, { ReactElement } from "react";
 import { styles } from "../models/theme/styles";
 import { RootState } from "../types/redux/store";
-import { lightTheme } from "../models/theme/theme";
+import { getAppTheme } from "../controllers/themes";
 import SongController from "./Reusable/SongController";
 import { IActiveSong } from "../controllers/redux/song";
 import { useNavigation } from "@react-navigation/native";
+import { ISettings } from "../controllers/redux/settings";
 import { ScreenNavigationProp } from "../types/navigation";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 
 export default function PlayerContainer(): ReactElement {
 	const navigation = useNavigation<ScreenNavigationProp>();
+	const { appTheme }: ISettings = useSelector((state: RootState) => state.settings);
 	const { data, exists }: IActiveSong = useSelector((state: RootState) => state.song);
 
 	const openSongPage = (): void => {
@@ -26,7 +28,7 @@ export default function PlayerContainer(): ReactElement {
 		return (
 			<TouchableOpacity
 				onPress={openSongPage}
-				style={{backgroundColor: lightTheme.playerBackground}}
+				style={{backgroundColor: (getAppTheme(appTheme)).playerBackground}}
 				className="absolute bottom-0 flex flex-row items-center px-4 py-3 justify-between w-full rounded-t-xl"
 			>
 				<View className="flex flex-row items-center">
@@ -35,8 +37,8 @@ export default function PlayerContainer(): ReactElement {
 						source={{uri: data.artwork}}
 					/>
 					<View className="ml-3">
-						<Text style={[styles.fontFamilyText, {color: lightTheme.text}]}>{getText(data.title)}</Text>
-						{(data.album.length !== 0) && <Text style={[styles.fontFamilyText, {color: lightTheme.text}]}>{getText(data.album)}</Text>}
+						<Text style={[styles.fontFamilyText, {color: (getAppTheme(appTheme)).text}]}>{getText(data.title)}</Text>
+						{(data.album.length !== 0) && <Text style={[styles.fontFamilyText, {color: (getAppTheme(appTheme)).text}]}>{getText(data.album)}</Text>}
 					</View>
 				</View>
 				<View className="w-28">

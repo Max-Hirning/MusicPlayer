@@ -1,20 +1,20 @@
 import SongsList from "./SongsList";
 import { View } from "react-native";
+import { useSelector } from "react-redux";
 import SortTypesList from "./SortTypesList";
-// import { Button } from "react-native";
 import React, { ReactElement } from "react";
 import PlayerContainer from "../PlayerContainer";
-// import AsyncStorage from "@react-native-async-storage/async-storage";
+import { RootState } from "../../types/redux/store";
+import { getAppTheme } from "../../controllers/themes";
+import { ISettings } from "../../controllers/redux/settings";
 
 export default function Main(): ReactElement {
+	const { appTheme }: ISettings = useSelector((state: RootState) => state.settings);
+
 	return (
-		<View className="flex-1">
+		<View className="flex-1" style={{ backgroundColor: (getAppTheme(appTheme)).background }}>
 			<View>
 				<SortTypesList/>
-				{/* <Button title="reset" onPress={() => {
-					AsyncStorage.removeItem("song");
-					AsyncStorage.removeItem("songs");
-				}} /> */}
 				<SongsList/>
 			</View>
 			<PlayerContainer/>

@@ -4,15 +4,17 @@ import React, { ReactElement } from "react";
 import { View, Text, Image } from "react-native";
 import { styles } from "../../models/theme/styles";
 import { RootState } from "../../types/redux/store";
-import { lightTheme } from "../../models/theme/theme";
+import { getAppTheme } from "../../controllers/themes";
 import SongController from "../Reusable/SongController";
 import { IActiveSong } from "../../controllers/redux/song";
+import { ISettings } from "../../controllers/redux/settings";
 
 export default function Song(): ReactElement {
-	const { data, exists }: IActiveSong = useSelector((state: RootState) => state.song);
-	console.log(data, exists);
+	const { data }: IActiveSong = useSelector((state: RootState) => state.song);
+	const { appTheme }: ISettings = useSelector((state: RootState) => state.settings);
+
 	return (
-		<View className="flex-1 items-center justify-between pt-5 pb-10">
+		<View className="flex-1 items-center justify-between pt-5 pb-10" style={{ backgroundColor: (getAppTheme(appTheme)).background }} >
 			<Image
 				className="w-72 h-72 rounded-xl"
 				source={{uri: data.artwork}}
@@ -20,11 +22,11 @@ export default function Song(): ReactElement {
 			<View>
 				<Text
 					className="text-2xl"
-					style={[{color: lightTheme.text}, styles.fontFamilyText]}
+					style={[{color: (getAppTheme(appTheme)).text}, styles.fontFamilyText]}
 				>{data.title}</Text>
 				<Text
 					className="text-base"
-					style={[{color: lightTheme.text}, styles.fontFamilyText]}
+					style={[{color: (getAppTheme(appTheme)).text}, styles.fontFamilyText]}
 				>{data.artist}</Text>
 			</View>
 			<SongActions/>
