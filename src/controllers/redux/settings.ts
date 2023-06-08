@@ -8,8 +8,8 @@ export interface ISettings {
 }
 
 const initialState: ISettings = {
+	appTheme: themes[0],
 	songsSortType: "Tracks",
-	appTheme: themes[0].value,
 };
 
 export const settingsSlice = createSlice({
@@ -24,9 +24,12 @@ export const settingsSlice = createSlice({
 			state.songsSortType = payload;
 			return state;
 		},
+		setSettings: (state: ISettings, { payload }: PayloadAction<ISettings|null>): ISettings => {
+			return payload || state;
+		},
 	},
 });
 
-export const { changeAppTheme, changeSongsSortType } = settingsSlice.actions;
+export const { changeAppTheme, changeSongsSortType, setSettings } = settingsSlice.actions;
 
 export default settingsSlice.reducer;

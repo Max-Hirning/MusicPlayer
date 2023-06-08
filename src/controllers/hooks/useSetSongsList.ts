@@ -30,8 +30,9 @@ export function useSetSongsList() {
 				if (songsList) {
 					if (JSON.parse(songsList).length !== songsFiles.length) {
 						createSongsList(songsFiles);
+					} else {
+						dispatch(setSongs(JSON.parse(songsList)));
 					}
-					dispatch(setSongs(JSON.parse(songsList)));
 				} else {
 					createSongsList(songsFiles);
 				}

@@ -1,11 +1,6 @@
-export const themes = [
-	{ label: "Light", value: "light" },
-	{ label: "Dark", value: "dark" },
-];
-
 export enum darkTheme {
-  text = "#FFFFFF",
-  icon = "#FFFFFF",
+  text = "#C7C7C7",
+  icon = "#C7C7C7",
   background = "#1E1E1E",
   playerBackground = "#161616",
 }
@@ -13,6 +8,8 @@ export enum darkTheme {
 export enum lightTheme {
   text = "#212121",
   icon = "#212121",
-  background = "#FFFFFF",
+  background = "#DFDEDE",
   playerBackground = "#ABABAB",
 }
+
+export const themes: string[] = [ "Light", "Dark"];

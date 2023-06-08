@@ -9,7 +9,6 @@ import { useSelector } from "react-redux";
 import Settings from "./Settings/Settings";
 import SettingsIcon from "../icons/settings";
 import { RootState } from "../types/redux/store";
-import { getAppTheme, getBarStyleTheme } from "../controllers/themes";
 import React, { useEffect, ReactElement } from "react";
 import { storeData } from "../controllers/asyncStorage";
 import { useNavigation } from "@react-navigation/native";
@@ -17,6 +16,8 @@ import { ISettings } from "../controllers/redux/settings";
 import { TouchableOpacity, StatusBar } from "react-native";
 import { ScreenNavigationProp } from "../types/navigation";
 import { useSetSong } from "../controllers/hooks/useSetSong";
+import { useSetSettings } from "../controllers/hooks/useSetSettings";
+import { getAppTheme, getBarStyleTheme } from "../controllers/themes";
 import { useSetSongsList } from "../controllers/hooks/useSetSongsList";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -24,7 +25,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-function App() {
+function App(): ReactElement {
 	const { appTheme }: ISettings = useSelector((state: RootState) => state.settings);
 
 	return (
@@ -55,8 +56,9 @@ function App() {
 	);
 }
 
-export default function Navigation() {
+export default function Navigation(): ReactElement {
 	const setSong = useSetSong();
+	const setSettings = useSetSettings();
 	const setSongsList = useSetSongsList();
 	const navigation = useNavigation<ScreenNavigationProp>();
 	const { appTheme }: ISettings = useSelector((state: RootState) => state.settings);
@@ -66,19 +68,21 @@ export default function Navigation() {
 		const subscription = AppState.addEventListener("change", nextAppState => {
 			if (nextAppState === "active") {
 				setSong();
+				setSettings();
 				setSongsList();
 			} else {
 				if (song.exists) {
 					storeData("song", JSON.stringify(song.data));
 				}
 				storeData("songs", JSON.stringify(songs));
+				storeData("settings", JSON.stringify(settings));
 			}
 		});
 
 		return () => {
 			subscription.remove();
 		};
-	}, [songs, song, setSongsList, setSong]);
+	}, [songs, song, settings, setSongsList, setSong, setSettings]);
 
 	return (
 		<>
