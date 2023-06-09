@@ -13,6 +13,13 @@ export default function Song(): ReactElement {
 	const { data }: IActiveSong = useSelector((state: RootState) => state.song);
 	const { appTheme }: ISettings = useSelector((state: RootState) => state.settings);
 
+	const getText = (text: string): string => {
+		if (text.length === 0) {
+			return "Unknown";
+		}
+		return text;
+	};
+
 	return (
 		<View className="flex-1 items-center justify-between pt-5 pb-10" style={{ backgroundColor: (getAppTheme(appTheme)).background }} >
 			<Image
@@ -21,13 +28,13 @@ export default function Song(): ReactElement {
 			/>
 			<View>
 				<Text
-					className="text-2xl"
+					className="text-2xl text-center"
 					style={[{color: (getAppTheme(appTheme)).text}, styles.fontFamilyText]}
-				>{data.title}</Text>
+				>{getText(data.title)}</Text>
 				<Text
-					className="text-base"
+					className="text-base text-center mt-2"
 					style={[{color: (getAppTheme(appTheme)).text}, styles.fontFamilyText]}
-				>{data.artist}</Text>
+				>Author: {getText(data.artist)}</Text>
 			</View>
 			<SongActions/>
 			<View className="w-80">

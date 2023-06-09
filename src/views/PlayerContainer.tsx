@@ -20,6 +20,9 @@ export default function PlayerContainer(): ReactElement {
 	};
 
 	const getText = (text: string): string => {
+		if (text.length === 0) {
+			return "Unknown";
+		}
 		if (text.length >= 18) {return `${text.slice(0, 18)}...`;}
 		return text;
 	};
@@ -38,7 +41,7 @@ export default function PlayerContainer(): ReactElement {
 					/>
 					<View className="ml-3">
 						<Text style={[styles.fontFamilyText, {color: (getAppTheme(appTheme)).text}]}>{getText(data.title)}</Text>
-						{(data.album.length !== 0) && <Text style={[styles.fontFamilyText, {color: (getAppTheme(appTheme)).text}]}>{getText(data.album)}</Text>}
+						<Text style={[styles.fontFamilyText, {color: (getAppTheme(appTheme)).text}]}>{getText(data.album)}</Text>
 					</View>
 				</View>
 				<View className="w-28">
