@@ -17,13 +17,14 @@ export default function SongsList(): ReactElement {
 	const [activeTrack, setActiveTrack] = useState<number>(-1);
 	const songs: ISong[] = useSelector((state: RootState) => state.songs);
 	const { appTheme }: ISettings = useSelector((state: RootState) => state.settings);
-	// console.log(isPlayed);
-	useTrackPlayerEvents([Event.PlaybackTrackChanged], async () => {
-		const activeTrackIndex = await TrackPlayer.getCurrentTrack();
-		if (activeTrackIndex) {
-			setActiveTrack(activeTrackIndex);
-		}
-	});
+	
+	// useTrackPlayerEvents([Event.PlaybackTrackChanged, Event.PlaybackMetadataReceived], async (el: any) => {
+	// 	console.log(el);
+	// 	const activeTrackIndex = await TrackPlayer.getCurrentTrack();
+	// 	if (activeTrackIndex) {
+	// 		setActiveTrack(activeTrackIndex);
+	// 	}
+	// });
 
 	const getText = (text: string): string => {
 		if (text.length === 0) {
@@ -35,8 +36,9 @@ export default function SongsList(): ReactElement {
 		return text;
 	};
 
-	const chooseSong = (song: ISong) => async (): Promise<void> => {
+	const chooseSong = (song: ISong, id: number) => async (): Promise<void> => {
 		dispatch(setSong(song));
+		TrackPlayer.skipToNext(id);
 	};
 
 	return (
@@ -46,7 +48,7 @@ export default function SongsList(): ReactElement {
 			renderItem={({ item, index }: { item: ISong, index: number }): ReactElement => {
 				return (
 					<TouchableOpacity
-						onPress={chooseSong(item)}
+						onPress={chooseSong(item, index+1)}
 						className="flex flex-row items-center mx-6 my-3 justify-between"
 					>
 						<View className="flex flex-row items-center">

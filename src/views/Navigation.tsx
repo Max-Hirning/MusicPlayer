@@ -21,6 +21,7 @@ import { getAppTheme, getBarStyleTheme } from "../controllers/themes";
 import { useSetSongsList } from "../controllers/hooks/useSetSongsList";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import EditSong from "./Edit/EditSong";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -117,7 +118,7 @@ export default function Navigation(): ReactElement {
 						},
 						headerRight: (): ReactElement => {
 							return (
-								<TouchableOpacity onPress={() => console.log("sdv")}>
+								<TouchableOpacity onPress={() => navigation.navigate("EditSong", song.data)}>
 									<EditIcon width={30} height={30} color={(getAppTheme(appTheme)).icon}/>
 								</TouchableOpacity>
 							);
@@ -125,6 +126,21 @@ export default function Navigation(): ReactElement {
 					}}
 					name="Song"
 					component={Song}
+				/>
+				<Stack.Screen
+					options={{
+						title: "Edit Track",
+						headerTitleAlign: "center",
+						headerLeft: (): ReactElement => {
+							return (
+								<TouchableOpacity onPress={() => navigation.goBack()}>
+									<ReturnIcon width={50} height={50} color={(getAppTheme(appTheme)).icon}/>
+								</TouchableOpacity>
+							);
+						},
+					}}
+					name="EditSong"
+					component={EditSong}
 				/>
 				<Stack.Screen
 					name="App"
