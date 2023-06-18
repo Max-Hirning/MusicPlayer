@@ -27,15 +27,6 @@ export const playbackService = async (): Promise<void> => {
 };
 
 export const addTracks = async (songsList: ISong[]): Promise<void> => {
-	// await TrackPlayer.add([
-	// 	{
-	// 		id: "1",
-	// 		url: require("./assets/fluidity-100-ig-edit-4558.mp3"),
-	// 		title: "Fluidity",
-	// 		artist: "tobylane",
-	// 		duration: 60,
-	// 	},
-	// ]);
 	await TrackPlayer.add(songsList);
 	await TrackPlayer.setRepeatMode(RepeatMode.Queue);
 };

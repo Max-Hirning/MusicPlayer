@@ -1,30 +1,19 @@
 import SoundIcon from "../../icons/sound";
+import React, { ReactElement } from "react";
 import { ISong } from "../../types/redux/song";
 import { styles } from "../../models/theme/styles";
-import React, { ReactElement, useState } from "react";
+import TrackPlayer from "react-native-track-player";
 import { getAppTheme } from "../../controllers/themes";
 import { useSelector, useDispatch } from "react-redux";
 import { setSong } from "../../controllers/redux/song";
 import { ISettings } from "../../controllers/redux/settings";
 import { AppDispatch, RootState } from "../../types/redux/store";
-// import { useGetTrackStatus } from "../../controllers/hooks/tracks";
 import { View, FlatList, Text, Image, TouchableOpacity } from "react-native";
-import TrackPlayer, { useTrackPlayerEvents, Event } from "react-native-track-player";
 
 export default function SongsList(): ReactElement {
-	// const isPlayed = useGetTrackStatus();
 	const dispatch: AppDispatch = useDispatch();
-	const [activeTrack, setActiveTrack] = useState<number>(-1);
 	const songs: ISong[] = useSelector((state: RootState) => state.songs);
 	const { appTheme }: ISettings = useSelector((state: RootState) => state.settings);
-	
-	// useTrackPlayerEvents([Event.PlaybackTrackChanged, Event.PlaybackMetadataReceived], async (el: any) => {
-	// 	console.log(el);
-	// 	const activeTrackIndex = await TrackPlayer.getCurrentTrack();
-	// 	if (activeTrackIndex) {
-	// 		setActiveTrack(activeTrackIndex);
-	// 	}
-	// });
 
 	const getText = (text: string): string => {
 		if (text.length === 0) {
@@ -38,7 +27,7 @@ export default function SongsList(): ReactElement {
 
 	const chooseSong = (song: ISong, id: number) => async (): Promise<void> => {
 		dispatch(setSong(song));
-		TrackPlayer.skipToNext(id);
+		TrackPlayer.skip(id);
 	};
 
 	return (
@@ -48,7 +37,7 @@ export default function SongsList(): ReactElement {
 			renderItem={({ item, index }: { item: ISong, index: number }): ReactElement => {
 				return (
 					<TouchableOpacity
-						onPress={chooseSong(item, index+1)}
+						onPress={chooseSong(item, index)}
 						className="flex flex-row items-center mx-6 my-3 justify-between"
 					>
 						<View className="flex flex-row items-center">
@@ -62,7 +51,7 @@ export default function SongsList(): ReactElement {
 							</View>
 						</View>
 						{
-							(index === activeTrack) &&
+							(false) &&
 							<SoundIcon
 								width={28}
 								height={28}

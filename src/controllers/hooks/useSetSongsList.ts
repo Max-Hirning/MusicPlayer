@@ -7,7 +7,7 @@ import RNFS, { ReadDirItem } from "react-native-fs";
 import { AppDispatch } from "../../types/redux/store";
 import { setupPlayer, addTracks } from "../trackPlayer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { check, PERMISSIONS, RESULTS } from "react-native-permissions";
+// import { check, PERMISSIONS, RESULTS } from "react-native-permissions";
 
 export function useSetSongsList() {
 	const dispatch: AppDispatch = useDispatch();
@@ -22,8 +22,9 @@ export function useSetSongsList() {
 
 	const getMusicFiles = async (): Promise<void> => {
 		try {
-			const permission = await check(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE);
-			if (permission === RESULTS.GRANTED) {
+			// const permission = await check(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE);
+			// permission === RESULTS.GRANTED
+			if (true) {
 				const path = RNFS.ExternalStorageDirectoryPath;
 				const files = await RNFS.readDir(`${path}/Music`);
 				const songsList = await AsyncStorage.getItem("songs");
@@ -54,8 +55,6 @@ export function useSetSongsList() {
 				await addTracks(songsList);
 				dispatch(setSongs(songsList));
 			}
-
-			console.log(isSetup);
 		} catch (error) {
 			console.log(error);
 		}
@@ -75,7 +74,6 @@ export function useSetSongsList() {
 				});
 			});
 			addSongsList(newListOfSongs);
-			// dispatch(setSongs(newListOfSongs));
 			storeData("songs", JSON.stringify(newListOfSongs));
 		} catch (error) {
 			console.log(error);
