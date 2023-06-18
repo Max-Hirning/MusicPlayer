@@ -23,7 +23,7 @@ export default function Song(): ReactElement {
 	};
 
 	return (
-		<View className="flex-1 items-center justify-between pt-5 pb-10" style={{ backgroundColor: (getAppTheme(appTheme)).background }} >
+		<View className="flex-1 items-center justify-between pt-5 pb-10 px-5" style={{ backgroundColor: (getAppTheme(appTheme)).background }} >
 			<Image
 				className="w-72 h-72 rounded-xl"
 				source={{uri: data.artwork}}
@@ -45,10 +45,8 @@ export default function Song(): ReactElement {
 			>
 				<View
 					className="h-1"
-					style={{backgroundColor: getAppTheme(appTheme).icon, width: `${progress.position/(progress.duration/100)}%`}}
-				>
-
-				</View>
+					style={{backgroundColor: getAppTheme(appTheme).icon, width: `${progress.position / (progress.duration / 100)}%`}}
+				/>
 			</View>
 			<View className="w-80">
 				<SongController itemSize={60}/>

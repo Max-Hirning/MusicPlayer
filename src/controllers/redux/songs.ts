@@ -1,7 +1,7 @@
+import { addTracks } from "../trackPlayer";
 import { ISong } from "../../types/redux/song";
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { addTracks } from "../trackPlayer";
 
 const initialState: ISong[] = [];
 

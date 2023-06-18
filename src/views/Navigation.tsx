@@ -63,7 +63,7 @@ export default function Navigation(): ReactElement {
 	const setSongsList = useSetSongsList();
 	const navigation = useNavigation<ScreenNavigationProp>();
 	const { appTheme }: ISettings = useSelector((state: RootState) => state.settings);
-	const { songs, song, settings }: RootState = useSelector((state: RootState) => state);
+	const { songs, song, settings, likedSongs }: RootState = useSelector((state: RootState) => state);
 
 	useEffect(() => {
 		const subscription = AppState.addEventListener("change", nextAppState => {
@@ -77,13 +77,14 @@ export default function Navigation(): ReactElement {
 				}
 				storeData("songs", JSON.stringify(songs));
 				storeData("settings", JSON.stringify(settings));
+				storeData("likedSongs", JSON.stringify(likedSongs));
 			}
 		});
 
 		return () => {
 			subscription.remove();
 		};
-	}, [songs, song, settings, setSongsList, setSong, setSettings]);
+	}, [songs, song, settings, likedSongs, setSongsList, setSong, setSettings]);
 
 	return (
 		<>
