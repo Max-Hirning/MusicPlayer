@@ -3,6 +3,8 @@ import { useSelector } from "react-redux";
 import React, { ReactElement } from "react";
 import { View, Text, Image } from "react-native";
 import { styles } from "../../models/theme/styles";
+import TrackPlayer from "react-native-track-player";
+import Slider from "@react-native-community/slider";
 import { RootState } from "../../types/redux/store";
 import { getAppTheme } from "../../controllers/themes";
 import { useProgress } from "react-native-track-player";
@@ -22,6 +24,14 @@ export default function Song(): ReactElement {
 		return text;
 	};
 
+	const changeProgressSong = async (value: number): Promise<void> => {
+		try {
+			await TrackPlayer.seekTo(value);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	return (
 		<View className="flex-1 items-center justify-between pt-5 pb-10 px-5" style={{ backgroundColor: (getAppTheme(appTheme)).background }} >
 			<Image
@@ -39,15 +49,16 @@ export default function Song(): ReactElement {
 				>Author: {getText(data.artist)}</Text>
 			</View>
 			<SongActions/>
-			<View
-				className="w-72 h-1"
-				style={{backgroundColor: getAppTheme(appTheme).progressBar}}
-			>
-				<View
-					className="h-1"
-					style={{backgroundColor: getAppTheme(appTheme).icon, width: `${progress.position / (progress.duration / 100)}%`}}
-				/>
-			</View>
+			<Slider
+				minimumValue={0}
+				value={progress.position}
+				maximumValue={progress.duration}
+				style={{width: 300, height: 40}}
+				onValueChange={changeProgressSong}
+				thumbTintColor={getAppTheme(appTheme).icon}
+				maximumTrackTintColor={getAppTheme(appTheme).icon}
+				minimumTrackTintColor={getAppTheme(appTheme).progressBar}
+			/>
 			<View className="w-80">
 				<SongController itemSize={60}/>
 			</View>
