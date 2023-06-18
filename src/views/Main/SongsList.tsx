@@ -2,7 +2,7 @@ import SoundIcon from "../../icons/sound";
 import React, { ReactElement } from "react";
 import { ISong } from "../../types/redux/song";
 import { styles } from "../../models/theme/styles";
-import TrackPlayer from "react-native-track-player";
+import TrackPlayer, { State } from "react-native-track-player";
 import { getAppTheme } from "../../controllers/themes";
 import { useSelector, useDispatch } from "react-redux";
 import { setSong } from "../../controllers/redux/song";
@@ -27,7 +27,11 @@ export default function SongsList(): ReactElement {
 
 	const chooseSong = (song: ISong, id: number) => async (): Promise<void> => {
 		dispatch(setSong(song));
-		TrackPlayer.skip(id);
+		await TrackPlayer.skip(id);
+		const trackState: State = await TrackPlayer.getState();
+		if (trackState !== State.Playing) {
+			TrackPlayer.play();
+		}
 	};
 
 	return (
