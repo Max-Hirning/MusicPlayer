@@ -64,7 +64,7 @@ export default function EditSong(): ReactElement {
 			<TouchableOpacity
 				onPress={saveTrack}
 				className="px-16 py-2 rounded-3xl my-10"
-				style={{backgroundColor: getAppTheme(appTheme).progressBar}}
+				style={{backgroundColor: getAppTheme(appTheme).playerBackground}}
 			>
 				<Text
 					className="text-xl"
