@@ -12,7 +12,7 @@ export default function SortTypesList(): ReactElement {
 	const { songsSortType, appTheme }: ISettings = useSelector((state: RootState) => state.settings);
 
 	const chooseSortType = (type: string) => (): void => {
-		dispatch(changeSongsSortType(type));
+		(type !== songsSortType) && dispatch(changeSongsSortType(type));
 	};
 
 	return (

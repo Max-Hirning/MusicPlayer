@@ -2,17 +2,18 @@ import SoundIcon from "../../icons/sound";
 import React, { ReactElement } from "react";
 import { ISong } from "../../types/redux/song";
 import { styles } from "../../models/theme/styles";
-import TrackPlayer, { State } from "react-native-track-player";
 import { getAppTheme } from "../../controllers/themes";
 import { useSelector, useDispatch } from "react-redux";
 import { setSong } from "../../controllers/redux/song";
 import { ISettings } from "../../controllers/redux/settings";
+import TrackPlayer, { State } from "react-native-track-player";
 import { AppDispatch, RootState } from "../../types/redux/store";
+import { useSortSongsList } from "../../controllers/hooks/useSortSongsList";
 import { View, FlatList, Text, Image, TouchableOpacity } from "react-native";
 
 export default function SongsList(): ReactElement {
+	const songsList = useSortSongsList();
 	const dispatch: AppDispatch = useDispatch();
-	const songs: ISong[] = useSelector((state: RootState) => state.songs);
 	const { appTheme }: ISettings = useSelector((state: RootState) => state.settings);
 
 	const getText = (text: string): string => {
@@ -36,7 +37,7 @@ export default function SongsList(): ReactElement {
 
 	return (
 		<FlatList
-			data={songs}
+			data={songsList}
 			className="mt-4 mb-28"
 			renderItem={({ item, index }: { item: ISong, index: number }): ReactElement => {
 				return (
