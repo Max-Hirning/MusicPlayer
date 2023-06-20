@@ -14,16 +14,16 @@ import React, { useEffect, ReactElement } from "react";
 import { storeData } from "../controllers/asyncStorage";
 import { useNavigation } from "@react-navigation/native";
 import { ISettings } from "../controllers/redux/settings";
-import { TouchableOpacity, StatusBar } from "react-native";
 import { ScreenNavigationProp } from "../types/navigation";
+import SongsGroupList from "./SongsGroupList/SongsGroupList";
 import { useSetSong } from "../controllers/hooks/useSetSong";
+import { TouchableOpacity, StatusBar, View } from "react-native";
 import { useSetSettings } from "../controllers/hooks/useSetSettings";
 import { getAppTheme, getBarStyleTheme } from "../controllers/themes";
 import { useSetSongsList } from "../controllers/hooks/useSetSongsList";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useControllTrack, useGetTrackStatus } from "../controllers/hooks/tracks";
-import SongsGroupList from "./SongsGroupList/SongsGroupList";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -43,14 +43,26 @@ function App(): ReactElement {
 		>
 			<Tab.Screen
 				options={{
-					tabBarIcon: (): ReactElement => <HomeIcon width={30} height={30} color={(getAppTheme(appTheme)).icon}/>,
+					tabBarIcon: ({ focused }): ReactElement => {
+						return (
+							<View className={`${focused ? "border-b-2" : ""}`}>
+								<HomeIcon width={30} height={30} color={(focused) ? (getAppTheme(appTheme)).icon : (getAppTheme(appTheme)).background}/>
+							</View>
+						);
+					},
 				}}
 				name="SongsList"
 				component={Main}
 			/>
 			<Tab.Screen
 				options={{
-					tabBarIcon: (): ReactElement => <SettingsIcon width={30} height={30} color={(getAppTheme(appTheme)).icon}/>,
+					tabBarIcon: ({ focused }): ReactElement => {
+						return (
+							<View className={`${focused ? "border-b-2" : ""}`}>
+								<SettingsIcon width={30} height={30} color={(focused) ? (getAppTheme(appTheme)).icon : (getAppTheme(appTheme)).background}/>
+							</View>
+						);
+					},
 				}}
 				name="Settings"
 				component={Settings}
