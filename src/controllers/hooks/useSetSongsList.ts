@@ -3,7 +3,6 @@ import { storeData } from "../asyncStorage";
 import { setupPlayer } from "../trackPlayer";
 import { setSongsAsync } from "../redux/songs";
 import { ISong } from "../../types/redux/song";
-import TrackPlayer from "react-native-track-player";
 import RNFS, { ReadDirItem } from "react-native-fs";
 import { AppDispatch } from "../../types/redux/store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -26,16 +25,16 @@ export function useSetSongsList() {
 			// permission === RESULTS.GRANTED
 			if (true) {
 				const path = RNFS.ExternalStorageDirectoryPath;
-				const files = await RNFS.readDir(`${path}/Music`);
+				const musicFiles = await RNFS.readDir(`${path}/Music`);
+				const downloadFiles = await RNFS.readDir(`${path}/Download`);
 				const songsList = await AsyncStorage.getItem("songs");
-				const songsFiles = files.filter(file => file.isFile() && file.name.toLowerCase().endsWith(".mp3"));
+				const songsFiles = [...musicFiles, ...downloadFiles].filter(file => file.isFile() && file.name.toLowerCase().endsWith(".mp3"));
 
 				if (songsList) {
 					if (JSON.parse(songsList).length !== songsFiles.length) {
 						createSongsList(songsFiles);
 					} else {
 						addSongsList(JSON.parse(songsList));
-						// dispatch(setSongs(JSON.parse(songsList)));
 					}
 				} else {
 					createSongsList(songsFiles);
@@ -49,9 +48,7 @@ export function useSetSongsList() {
 	const addSongsList = async (songsList: ISong[]): Promise<void> => {
 		try {
 			let isSetup = await setupPlayer();
-			const queue = await TrackPlayer.getQueue();
-
-			if (isSetup && queue.length <= 0) {
+			if (isSetup) {
 				dispatch(setSongsAsync(songsList));
 			}
 		} catch (error) {
