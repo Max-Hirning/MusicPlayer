@@ -3,7 +3,7 @@ import { View } from "react-native";
 import { useSelector } from "react-redux";
 import SortTypesList from "./SortTypesList";
 import React, { ReactElement } from "react";
-import PlayerContainer from "../PlayerContainer";
+import PlayerContainer from "../Reusable/PlayerContainer";
 import { RootState } from "../../types/redux/store";
 import { getAppTheme } from "../../controllers/themes";
 import { ISettings } from "../../controllers/redux/settings";

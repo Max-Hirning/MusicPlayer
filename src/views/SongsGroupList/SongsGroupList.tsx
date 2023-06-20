@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import SongsList from "./SongsList";
 import { useSelector } from "react-redux";
-import PlayerContainer from "../PlayerContainer";
+import PlayerContainer from "../Reusable/PlayerContainer";
 import { RootState } from "../../types/redux/store";
 import React, { ReactElement, useEffect } from "react";
 import { getAppTheme } from "../../controllers/themes";

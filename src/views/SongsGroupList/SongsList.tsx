@@ -8,13 +8,12 @@ import { setSong } from "../../controllers/redux/song";
 import { ISettings } from "../../controllers/redux/settings";
 import TrackPlayer, { State } from "react-native-track-player";
 import { AppDispatch, RootState } from "../../types/redux/store";
-import { ISongsGroupList } from "../../controllers/redux/SongsGroupList";
 import { View, FlatList, Text, Image, TouchableOpacity } from "react-native";
 
 export default function SongsList(): ReactElement {
 	const dispatch: AppDispatch = useDispatch();
 	const { appTheme }: ISettings = useSelector((state: RootState) => state.settings);
-	const { data }: ISongsGroupList = useSelector((state: RootState) => state.songsGroupList);
+	const songsGroupList: ISong[] = useSelector((state: RootState) => state.songsGroupList);
 
 	const getText = (text: string): string => {
 		if (text.length === 0) {
@@ -35,7 +34,7 @@ export default function SongsList(): ReactElement {
 
 	return (
 		<FlatList
-			data={data}
+			data={songsGroupList}
 			className="mt-4 mb-28"
 			keyExtractor={(_: ISong, index: number): string => index.toString()}
 			renderItem={({ item, index }: { item: ISong, index: number }): ReactElement => {

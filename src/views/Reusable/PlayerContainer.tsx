@@ -1,13 +1,13 @@
 import { useSelector } from "react-redux";
 import React, { ReactElement } from "react";
-import { styles } from "../models/theme/styles";
-import { RootState } from "../types/redux/store";
-import { getAppTheme } from "../controllers/themes";
-import SongController from "./Reusable/SongController";
-import { IActiveSong } from "../controllers/redux/song";
+import SongController from "./SongController";
+import { styles } from "../../models/theme/styles";
+import { RootState } from "../../types/redux/store";
+import { getAppTheme } from "../../controllers/themes";
 import { useNavigation } from "@react-navigation/native";
-import { ISettings } from "../controllers/redux/settings";
-import { ScreenNavigationProp } from "../types/navigation";
+import { IActiveSong } from "../../controllers/redux/song";
+import { ISettings } from "../../controllers/redux/settings";
+import { ScreenNavigationProp } from "../../types/navigation";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 
 export default function PlayerContainer(): ReactElement {

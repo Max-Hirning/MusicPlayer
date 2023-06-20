@@ -3,6 +3,7 @@ import { styles } from "../../models/theme/styles";
 import { sortsTypes } from "../../models/sortsTypes";
 import { useDispatch, useSelector } from "react-redux";
 import { getAppTheme } from "../../controllers/themes";
+import { resetSong } from "../../controllers/redux/song";
 import { FlatList, Text, TouchableOpacity } from "react-native";
 import { AppDispatch, RootState } from "../../types/redux/store";
 import { ISettings, changeSongsSortType } from "../../controllers/redux/settings";
@@ -12,7 +13,10 @@ export default function SortTypesList(): ReactElement {
 	const { songsSortType, appTheme }: ISettings = useSelector((state: RootState) => state.settings);
 
 	const chooseSortType = (type: string) => (): void => {
-		(type !== songsSortType) && dispatch(changeSongsSortType(type));
+		if (type !== songsSortType) {
+			dispatch(resetSong());
+			dispatch(changeSongsSortType(type));
+		}
 	};
 
 	return (

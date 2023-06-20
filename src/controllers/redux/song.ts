@@ -17,6 +17,9 @@ export const songSlice = createSlice({
 	name: "song",
 	initialState,
 	reducers: {
+		resetSong: (): IActiveSong => {
+			return initialState;
+		},
 		setSong: (state: IActiveSong, { payload }: PayloadAction<ISong>): IActiveSong => {
 			if (payload) {
 				state.data = payload;
@@ -27,6 +30,6 @@ export const songSlice = createSlice({
 	},
 });
 
-export const { setSong } = songSlice.actions;
+export const { setSong, resetSong } = songSlice.actions;
 
 export default songSlice.reducer;

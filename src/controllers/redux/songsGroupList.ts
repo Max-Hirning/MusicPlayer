@@ -3,30 +3,15 @@ import { ISong } from "../../types/redux/song";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-export interface ISongsGroupList {
-	data: ISong[];
-	isSongChoosen: boolean,
-}
-
-const initialState: ISongsGroupList = {
-	data: [],
-	isSongChoosen: false,
-};
+const initialState: ISong[] = [];
 
 const songsGroupListSlice = createSlice({
 	reducers: {},
 	initialState,
 	name: "songsGroupList",
 	extraReducers: (builder) => {
-		builder.addCase(setSongsGroupListAsync.pending, (): ISongsGroupList => {
-			return initialState;
-		});
-		builder.addCase(setSongsGroupListAsync.rejected, (): ISongsGroupList => {
-			return initialState;
-		});
-		builder.addCase(setSongsGroupListAsync.fulfilled, (state: ISongsGroupList, { payload }: PayloadAction<ISong[]>): ISongsGroupList => {
-			state.data = payload;
-			return state;
+		builder.addCase(setSongsGroupListAsync.fulfilled, (_: ISong[], { payload }: PayloadAction<ISong[]>): ISong[] => {
+			return payload;
 		});
 	},
 });

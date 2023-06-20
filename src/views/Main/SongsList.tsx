@@ -4,12 +4,12 @@ import { ISong } from "../../types/redux/song";
 import { styles } from "../../models/theme/styles";
 import { getAppTheme } from "../../controllers/themes";
 import { useSelector, useDispatch } from "react-redux";
-import { setSong } from "../../controllers/redux/song";
 import { useNavigation } from "@react-navigation/native";
 import { ISettings } from "../../controllers/redux/settings";
 import { ScreenNavigationProp } from "../../types/navigation";
 import TrackPlayer, { State } from "react-native-track-player";
 import { AppDispatch, RootState } from "../../types/redux/store";
+import { resetSong, setSong } from "../../controllers/redux/song";
 import { useSortSongsList } from "../../controllers/hooks/useSortSongsList";
 import { View, FlatList, Text, Image, TouchableOpacity } from "react-native";
 import { setSongsGroupListAsync } from "../../controllers/redux/songsGroupList";
@@ -81,6 +81,7 @@ export default function SongsList(): ReactElement {
 					return (
 						<TouchableOpacity
 							onPress={() => {
+								dispatch(resetSong());
 								dispatch(setSongsGroupListAsync(item[1]));
 								navigation.navigate("SongsGroupList", { title: `${songsSortType.slice(0, songsSortType.length - 1)}: ${item[0].toLowerCase()}` });
 							}}

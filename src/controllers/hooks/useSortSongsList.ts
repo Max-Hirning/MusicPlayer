@@ -1,5 +1,6 @@
 import { useMemo, useRef } from "react";
 import { useSelector } from "react-redux";
+import { setTracks } from "../trackPlayer";
 import { ISong } from "../../types/redux/song";
 import { RootState } from "../../types/redux/store";
 import { ISettings } from "../../controllers/redux/settings";
@@ -15,9 +16,12 @@ export function useSortSongsList(): ISong[]|ITest {
 	const { songsSortType }: ISettings = useSelector((state: RootState) => state.settings);
 
 	useMemo(() => {
+		let list: ISong[] = [];
 		switch (songsSortType.toLowerCase()) {
 		case "favorites":
-			songsList.current = songs.filter((song: ISong) => likedSongs.some((el: string) => el === song.url));
+			list = songs.filter((song: ISong) => likedSongs.some((el: string) => el === song.url));
+			songsList.current = list;
+			setTracks(list);
 			break;
 		case "genries":
 			songsList.current = songs.reduce((res: ITest, el: ISong): ITest => {
@@ -74,7 +78,9 @@ export function useSortSongsList(): ISong[]|ITest {
 			}, {});
 			break;
 		default:
-			songsList.current = (songs);
+			list = songs;
+			setTracks(list);
+			songsList.current = songs;
 		}
 	}, [songsSortType, likedSongs, songs]);
 
