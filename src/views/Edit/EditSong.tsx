@@ -1,22 +1,23 @@
 import Input from "../Reusable/Input";
 import { ISong } from "../../types/redux/song";
 import { song } from "../../models/redux/song";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { setSong } from "../../controllers/redux/song";
 import { useDispatch, useSelector } from "react-redux";
 import { getAppTheme } from "../../controllers/themes";
-import { changeSong } from "../../controllers/redux/songs";
 import { View, TouchableOpacity, Text } from "react-native";
 import { ISettings } from "../../controllers/redux/settings";
-import { ScreenNavigationProp, SongScreenRouteProp } from "../../types/navigation";
+import { setSongsAsync } from "../../controllers/redux/songs";
 import React, { ReactElement, useState, useEffect } from "react";
 import { AppDispatch, RootState } from "../../types/redux/store";
-import { setSong } from "../../controllers/redux/song";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { ScreenNavigationProp, EditSongScreenRouteProp } from "../../types/navigation";
 
 export default function EditSong(): ReactElement {
 	const dispatch: AppDispatch = useDispatch();
 	const [data, setData] = useState<ISong>(song);
-	const { params } = useRoute<SongScreenRouteProp>();
+	const { params } = useRoute<EditSongScreenRouteProp>();
 	const navigation = useNavigation<ScreenNavigationProp>();
+	const songs: ISong[] = useSelector((state: RootState) => state.songs);
 	const { appTheme }: ISettings = useSelector((state: RootState) => state.settings);
 
 	useEffect(() => {
@@ -25,8 +26,14 @@ export default function EditSong(): ReactElement {
 
 	const saveTrack = (): void => {
 		const newSong: ISong = {...data, date: (new Date()).toJSON().split("T")[0]};
-		dispatch(changeSong(newSong));
+		const EditSongId = songs.findIndex((el: ISong) => el.url === newSong.url);
+
+		const state = [ ...songs ];
+		state[EditSongId] = newSong;
+
+		dispatch(setSongsAsync(state));
 		dispatch(setSong(newSong));
+
 		navigation.goBack();
 	};
 

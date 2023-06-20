@@ -5,8 +5,12 @@ import type { StackNavigationProp } from "@react-navigation/stack";
 type NavigationParamList = {
     Song: undefined;
     EditSong: ISong;
+    SongsGroupList: {
+        title: string;
+    };
     SongsList: undefined;
 };
 
-export type SongScreenRouteProp = RouteProp<NavigationParamList, "EditSong">;
+export type EditSongScreenRouteProp = RouteProp<NavigationParamList, "EditSong">;
 export type ScreenNavigationProp = StackNavigationProp<NavigationParamList, "SongsList">;
+export type SongsGroupListScreenRouteProp = RouteProp<NavigationParamList, "SongsGroupList">;

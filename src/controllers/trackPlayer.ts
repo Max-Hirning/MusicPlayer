@@ -26,7 +26,8 @@ export const playbackService = async (): Promise<void> => {
 	// TODO: Attach remote event handlers
 };
 
-export const addTracks = async (songsList: ISong[]): Promise<void> => {
+export const setTracks = async (songsList: ISong[]): Promise<void> => {
+	await TrackPlayer.reset();
 	await TrackPlayer.add(songsList);
 	await TrackPlayer.setRepeatMode(RepeatMode.Queue);
 };

@@ -1,1 +1,1 @@
-export const sortsTypes = ["Favorites", "Playlists", "Tracks", "Albums", "Artists"];
+export const sortsTypes = ["Favorites", "Genries", "Tracks", "Albums", "Artists"];

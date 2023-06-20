@@ -20,7 +20,7 @@ interface IProps {
 export default function SongController({ itemSize }: IProps): ReactElement {
 	const isPlayed = useGetTrackStatus();
 	const dispatch: AppDispatch = useDispatch();
-	const [ playTrack, stopTrack, nextTrack, previousTrack ] = useControllTrack();
+	const { playTrack, stopTrack, nextTrack, previousTrack } = useControllTrack();
 	const { appTheme }: ISettings = useSelector((state: RootState) => state.settings);
 
 	const playPauseTrack = async () => {

@@ -3,6 +3,7 @@ import songsReducer from "./songs";
 import settingsReducer from "./settings";
 import likedSongsReducer from "./likedSongs";
 import { configureStore } from "@reduxjs/toolkit";
+import SongsGroupListReducer from "./songsGroupList";
 
 export const store = configureStore({
 	reducer: {
@@ -10,5 +11,6 @@ export const store = configureStore({
 		songs: songsReducer,
 		settings: settingsReducer,
 		likedSongs: likedSongsReducer,
+		songsGroupList: SongsGroupListReducer,
 	},
 });

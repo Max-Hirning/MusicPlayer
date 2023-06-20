@@ -2,6 +2,7 @@ import Main from "./Main/Main";
 import Song from "./Song/Song";
 import HomeIcon from "../icons/home";
 import EditIcon from "../icons/edit";
+import EditSong from "./Edit/EditSong";
 import ShareIcon from "../icons/share";
 import { AppState } from "react-native";
 import ReturnIcon from "../icons/return";
@@ -21,7 +22,8 @@ import { getAppTheme, getBarStyleTheme } from "../controllers/themes";
 import { useSetSongsList } from "../controllers/hooks/useSetSongsList";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import EditSong from "./Edit/EditSong";
+import { useControllTrack, useGetTrackStatus } from "../controllers/hooks/tracks";
+import SongsGroupList from "./SongsGroupList/SongsGroupList";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -61,6 +63,8 @@ export default function Navigation(): ReactElement {
 	const setSong = useSetSong();
 	const setSettings = useSetSettings();
 	const setSongsList = useSetSongsList();
+	const { stopTrack } = useControllTrack();
+	const trackPlayingStatus = useGetTrackStatus();
 	const navigation = useNavigation<ScreenNavigationProp>();
 	const { appTheme }: ISettings = useSelector((state: RootState) => state.settings);
 	const { songs, song, settings, likedSongs }: RootState = useSelector((state: RootState) => state);
@@ -119,7 +123,10 @@ export default function Navigation(): ReactElement {
 						},
 						headerRight: (): ReactElement => {
 							return (
-								<TouchableOpacity onPress={() => navigation.navigate("EditSong", song.data)}>
+								<TouchableOpacity onPress={async () => {
+									(trackPlayingStatus) && await stopTrack();
+									navigation.navigate("EditSong", song.data);
+								}}>
 									<EditIcon width={30} height={30} color={(getAppTheme(appTheme)).icon}/>
 								</TouchableOpacity>
 							);
@@ -127,6 +134,21 @@ export default function Navigation(): ReactElement {
 					}}
 					name="Song"
 					component={Song}
+				/>
+				<Stack.Screen
+					options={{
+						title: "",
+						headerTitleAlign: "center",
+						headerLeft: (): ReactElement => {
+							return (
+								<TouchableOpacity onPress={() => navigation.goBack()}>
+									<ReturnIcon width={50} height={50} color={(getAppTheme(appTheme)).icon}/>
+								</TouchableOpacity>
+							);
+						},
+					}}
+					name="SongsGroupList"
+					component={SongsGroupList}
 				/>
 				<Stack.Screen
 					options={{

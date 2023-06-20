@@ -1,11 +1,11 @@
 import { useDispatch } from "react-redux";
-import { setSongs } from "../redux/songs";
 import { storeData } from "../asyncStorage";
+import { setupPlayer } from "../trackPlayer";
+import { setSongsAsync } from "../redux/songs";
 import { ISong } from "../../types/redux/song";
 import TrackPlayer from "react-native-track-player";
 import RNFS, { ReadDirItem } from "react-native-fs";
 import { AppDispatch } from "../../types/redux/store";
-import { setupPlayer, addTracks } from "../trackPlayer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 // import { check, PERMISSIONS, RESULTS } from "react-native-permissions";
 
@@ -52,8 +52,7 @@ export function useSetSongsList() {
 			const queue = await TrackPlayer.getQueue();
 
 			if (isSetup && queue.length <= 0) {
-				await addTracks(songsList);
-				dispatch(setSongs(songsList));
+				dispatch(setSongsAsync(songsList));
 			}
 		} catch (error) {
 			console.log(error);

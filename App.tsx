@@ -11,7 +11,7 @@ import { checkGetPermmisionForStorageReading } from "./src/controllers/permissio
 
 export default function App(): ReactElement {
 	const isDarkMode = useColorScheme() === "dark";
-	const [ playTrack, stopTrack, nextTrack, previousTrack ] = useControllTrack();
+	const { playTrack, stopTrack, nextTrack, previousTrack } = useControllTrack();
 	const backgroundStyle = { backgroundColor: isDarkMode ? darkTheme.background : lightTheme.background };
 
 	useEffect(() => {

@@ -11,7 +11,11 @@ export function useGetTrackStatus(): boolean {
 	}
 }
 
-export function useControllTrack(): (() => Promise<void>)[] {
+interface ITest {
+	[key: string]: () => Promise<void>
+}
+
+export function useControllTrack(): ITest {
 	const playTrack = async (): Promise<void> => {
 		try {
 			await TrackPlayer.play();
@@ -44,5 +48,5 @@ export function useControllTrack(): (() => Promise<void>)[] {
 		}
 	};
 
-	return [ playTrack, stopTrack, nextTrack, previousTrack ];
+	return { playTrack, stopTrack, nextTrack, previousTrack };
 }

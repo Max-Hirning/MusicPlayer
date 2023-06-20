@@ -13,21 +13,21 @@ interface Props {
 }
 
 export default function Input({ value, title, placeholder, changeFunc }: Props): ReactElement {
-    const { appTheme }: ISettings = useSelector((state: RootState) => state.settings);
+	const { appTheme }: ISettings = useSelector((state: RootState) => state.settings);
 
-    return (
-        <View>
-            <Text 
-                style={{backgroundColor: getAppTheme(appTheme).background }}
-                className="ml-2 text-base relative top-2 text-center z-10 w-24" 
-            >{title}</Text>
-            <TextInput
-                value={value}
-                placeholder={placeholder}
-                onChangeText={changeFunc}
-                className="rounded-xl border-2 px-4 text-lg"
-                style={{borderColor: getAppTheme(appTheme).text}}
-            />
-        </View>
-    )
+	return (
+		<View>
+			<Text
+				style={{backgroundColor: getAppTheme(appTheme).background }}
+				className="ml-2 text-base relative top-2 text-center z-10 w-24"
+			>{title}</Text>
+			<TextInput
+				value={value}
+				placeholder={placeholder}
+				onChangeText={changeFunc}
+				className="rounded-xl border-2 px-4 text-lg"
+				style={{borderColor: getAppTheme(appTheme).text}}
+			/>
+		</View>
+	);
 }

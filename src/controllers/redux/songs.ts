@@ -1,26 +1,24 @@
-import { addTracks } from "../trackPlayer";
+import { setTracks } from "../trackPlayer";
 import { ISong } from "../../types/redux/song";
-import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 const initialState: ISong[] = [];
 
-export const songsSlice = createSlice({
-	name: "songs",
+const songsSlice = createSlice({
+	reducers: {},
 	initialState,
-	reducers: {
-		setSongs: (_: ISong[], { payload }: PayloadAction<ISong[]>): ISong[] => {
+	name: "songs",
+	extraReducers: (builder) => {
+		builder.addCase(setSongsAsync.fulfilled, (_: ISong[], { payload }: PayloadAction<ISong[]>): ISong[] => {
 			return payload;
-		},
-		changeSong: (state: ISong[], { payload }: PayloadAction<ISong>): ISong[] => {
-			const EditSongId = state.findIndex((el: ISong) => el.url === payload.url);
-			state[EditSongId] = payload;
-			addTracks(state);
-			return state;
-		},
+		});
 	},
 });
 
-export const { setSongs, changeSong } = songsSlice.actions;
-
 export default songsSlice.reducer;
+
+export const setSongsAsync = createAsyncThunk("songs/setSongs", async (payload: ISong[]): Promise<ISong[]> => {
+	await setTracks(payload);
+	return payload;
+});
