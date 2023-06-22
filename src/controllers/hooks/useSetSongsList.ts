@@ -1,19 +1,22 @@
-import { useDispatch } from "react-redux";
 import { storeData } from "../asyncStorage";
-import { setupPlayer } from "../trackPlayer";
+import { ISettings } from "../redux/settings";
 import { setSongsAsync } from "../redux/songs";
 import { ISong } from "../../types/redux/song";
 import RNFS, { ReadDirItem } from "react-native-fs";
-import { AppDispatch } from "../../types/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../types/redux/store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 // import { check, PERMISSIONS, RESULTS } from "react-native-permissions";
 
 export function useSetSongsList() {
 	const dispatch: AppDispatch = useDispatch();
+	const { isPlayerSetted }: ISettings = useSelector((state: RootState) => state.settings);
 
-	const start = async (): Promise<void> => {
+	const start = async (isSettedPlayer: boolean): Promise<void> => {
 		try {
-			await getMusicFiles();
+			if (isSettedPlayer || isPlayerSetted) {
+				await getMusicFiles();
+			}
 		} catch (error) {
 			console.log(error);
 		}
@@ -63,11 +66,8 @@ export function useSetSongsList() {
 
 	const addSongsList = async (songsList: ISong[]): Promise<void> => {
 		try {
-			let isSetup = await setupPlayer();
-			if (isSetup) {
-				dispatch(setSongsAsync(songsList));
-				storeData("songs", JSON.stringify(songsList));
-			}
+			dispatch(setSongsAsync(songsList));
+			storeData("songs", JSON.stringify(songsList));
 		} catch (error) {
 			console.log(error);
 		}

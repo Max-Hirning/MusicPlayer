@@ -4,11 +4,13 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 
 export interface ISettings {
 	appTheme: string;
-    songsSortType: string;
+	songsSortType: string;
+	isPlayerSetted: boolean;
 }
 
 const initialState: ISettings = {
 	appTheme: themes[0],
+	isPlayerSetted: false,
 	songsSortType: "Tracks",
 };
 
@@ -25,11 +27,19 @@ export const settingsSlice = createSlice({
 			return state;
 		},
 		setSettings: (state: ISettings, { payload }: PayloadAction<ISettings|null>): ISettings => {
-			return payload || state;
+			if (payload) {
+				state.appTheme = payload.appTheme;
+				state.songsSortType = payload.songsSortType;
+			}
+			return state;
+		},
+		changePlayerSettedStatus: (state: ISettings, { payload }: PayloadAction<boolean>): ISettings => {
+			state.isPlayerSetted = payload;
+			return state;
 		},
 	},
 });
 
-export const { changeAppTheme, changeSongsSortType, setSettings } = settingsSlice.actions;
+export const { changeAppTheme, changeSongsSortType, setSettings, changePlayerSettedStatus } = settingsSlice.actions;
 
 export default settingsSlice.reducer;
