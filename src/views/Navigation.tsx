@@ -8,6 +8,7 @@ import { AppState } from "react-native";
 import ReturnIcon from "../icons/return";
 import Settings from "./Settings/Settings";
 import SettingsIcon from "../icons/settings";
+import { setSong } from "../controllers/redux/song";
 import { useDispatch, useSelector } from "react-redux";
 import React, { useEffect, ReactElement } from "react";
 import { storeData } from "../controllers/asyncStorage";
@@ -25,6 +26,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useControllTrack, useGetTrackStatus } from "../controllers/hooks/tracks";
 import { ISettings, changePlayerSettedStatus } from "../controllers/redux/settings";
+import TrackPlayer, { Event, useProgress, useTrackPlayerEvents } from "react-native-track-player";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -73,7 +75,7 @@ function App(): ReactElement {
 }
 
 export default function Navigation(): ReactElement {
-	const setSong = useSetSong();
+	// const setSong = useSetSong();
 	const setSettings = useSetSettings();
 	const setSongsList = useSetSongsList();
 	const { stopTrack } = useControllTrack();
@@ -82,6 +84,12 @@ export default function Navigation(): ReactElement {
 	const navigation = useNavigation<ScreenNavigationProp>();
 	const { appTheme }: ISettings = useSelector((state: RootState) => state.settings);
 	const { songs, song, settings, likedSongs }: RootState = useSelector((state: RootState) => state);
+
+	useTrackPlayerEvents([Event.PlaybackTrackChanged], async (el: any) => {
+		const res = await TrackPlayer.getTrack(el.nextTrack);
+		console.log(res);
+		(res) && dispatch(setSong(res as ISong));
+	});
 
 	useEffect(() => {
 		const subscription = AppState.addEventListener("change", nextAppState => {
@@ -102,12 +110,12 @@ export default function Navigation(): ReactElement {
 				dispatch(changePlayerSettedStatus(isPlayerSettedUp));
 				setSongsList(isPlayerSettedUp);
 				setSettings();
-				setSong();
+				// setSong();
 			} else {
 				if (song.exists) {
 					storeData("song", JSON.stringify(song.data));
 				}
-				storeData("songs", JSON.stringify(songs));
+				// storeData("songs", JSON.stringify(songs));
 				storeData("settings", JSON.stringify(settings));
 				storeData("likedSongs", JSON.stringify(likedSongs));
 			}

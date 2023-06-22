@@ -1,5 +1,5 @@
 import { ISong } from "../types/redux/song";
-import TrackPlayer, { AppKilledPlaybackBehavior, Capability, RepeatMode } from "react-native-track-player";
+import TrackPlayer, { AppKilledPlaybackBehavior, Capability, Event, RepeatMode } from "react-native-track-player";
 
 export const setupPlayer = async (): Promise<boolean> => {
 	let isSetup = false;
@@ -23,7 +23,18 @@ export const setupPlayer = async (): Promise<boolean> => {
 };
 
 export const playbackService = async (): Promise<void> => {
-	// TODO: Attach remote event handlers
+	TrackPlayer.addEventListener(Event.RemotePlay, () => {
+		TrackPlayer.play();
+	});
+	TrackPlayer.addEventListener(Event.RemoteNext, () => {
+		TrackPlayer.skipToNext();
+	});
+	TrackPlayer.addEventListener(Event.RemotePause, () => {
+		TrackPlayer.pause();
+	});
+	TrackPlayer.addEventListener(Event.RemotePrevious, () => {
+		TrackPlayer.skipToPrevious();
+	});
 };
 
 export const setTracks = async (songsList: ISong[]): Promise<void> => {
