@@ -3,14 +3,13 @@ import { useSelector } from "react-redux";
 import React, { ReactElement } from "react";
 import { View, Text, Image } from "react-native";
 import { styles } from "../../models/theme/styles";
-import TrackPlayer from "react-native-track-player";
 import Slider from "@react-native-community/slider";
 import { RootState } from "../../types/redux/store";
 import { getAppTheme } from "../../controllers/themes";
-import { useProgress } from "react-native-track-player";
 import SongController from "../Reusable/SongController";
 import { IActiveSong } from "../../controllers/redux/song";
 import { ISettings } from "../../controllers/redux/settings";
+import TrackPlayer, { useProgress } from "react-native-track-player";
 
 export default function Song(): ReactElement {
 	const progress = useProgress();
@@ -22,6 +21,12 @@ export default function Song(): ReactElement {
 			return "Unknown";
 		}
 		return text;
+	};
+
+	const secondsToMinutes = (seconds: number): string => {
+		const minutes = Math.floor(seconds / 60);
+		const remainingSeconds = seconds % 60;
+		return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds.toFixed(0)}`;
 	};
 
 	const changeProgressSong = async (value: number): Promise<void> => {
@@ -49,11 +54,15 @@ export default function Song(): ReactElement {
 				>Author: {getText(data.artist)}</Text>
 			</View>
 			<SongActions/>
+			<View className="top-5 relative w-80 flex-row items-center justify-between">
+				<Text style={{color: getAppTheme(appTheme).text}}>{secondsToMinutes(progress.position)}</Text>
+				<Text style={{color: getAppTheme(appTheme).text}}>{secondsToMinutes(progress.duration)}</Text>
+			</View>
 			<Slider
 				minimumValue={0}
 				value={progress.position}
 				maximumValue={progress.duration}
-				style={{width: 300, height: 40}}
+				style={{width: 320, height: 40}}
 				onValueChange={changeProgressSong}
 				thumbTintColor={getAppTheme(appTheme).icon}
 				maximumTrackTintColor={getAppTheme(appTheme).icon}
