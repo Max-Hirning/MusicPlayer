@@ -28,14 +28,30 @@ export function useSetSongsList() {
 				const musicFiles = await RNFS.readDir(`${path}/Music`);
 				const downloadFiles = await RNFS.readDir(`${path}/Download`);
 				const songsList = await AsyncStorage.getItem("songs");
-				const songsFiles = [...musicFiles, ...downloadFiles].filter(file => file.isFile() && file.name.toLowerCase().endsWith(".mp3"));
+				const songsFiles = [...musicFiles, ...downloadFiles].filter((file: ReadDirItem) => file.isFile() && file.name.toLowerCase().endsWith(".mp3"));
 
 				if (songsList) {
-					if (JSON.parse(songsList).length !== songsFiles.length) {
-						createSongsList(songsFiles);
-					} else {
-						addSongsList(JSON.parse(songsList));
-					}
+					const newSongList: ISong[] = [];
+					const songs = JSON.parse(songsList);
+					songsFiles.map((file: ReadDirItem) => {
+						const songId = songs.findIndex((song: ISong) => song.url === file.path);
+						if (songId >= 0) {
+							newSongList.push(songs[songId]);
+						} else {
+							if (!(songsFiles.length < songs.length)) {
+								newSongList.push({
+									album: "",
+									genre: "",
+									artist: "",
+									url: file.path,
+									title: file.name.split(".")[0],
+									date: ((new Date()).toJSON()).split("T")[0],
+									artwork: "https://firebasestorage.googleapis.com/v0/b/musicplayer-60ee0.appspot.com/o/defaultAlbum.png?alt=media&token=e59f8bfe-38db-4ca0-ad80-7a1a962ec10b&_gl=1*s95tvr*_ga*MTA0NTM4MTIzOS4xNjg2MTQ0NjM3*_ga_CW55HF8NVT*MTY4NjE0NDYzNy4xLjEuMTY4NjE0NDkyOC4wLjAuMA",
+								});
+							}
+						}
+					});
+					addSongsList(newSongList);
 				} else {
 					createSongsList(songsFiles);
 				}
@@ -50,6 +66,7 @@ export function useSetSongsList() {
 			let isSetup = await setupPlayer();
 			if (isSetup) {
 				dispatch(setSongsAsync(songsList));
+				storeData("songs", JSON.stringify(songsList));
 			}
 		} catch (error) {
 			console.log(error);
@@ -70,7 +87,6 @@ export function useSetSongsList() {
 				});
 			});
 			addSongsList(newListOfSongs);
-			storeData("songs", JSON.stringify(newListOfSongs));
 		} catch (error) {
 			console.log(error);
 		}
