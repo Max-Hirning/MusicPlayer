@@ -1,6 +1,5 @@
 import Main from "./Main/Main";
 import Song from "./Song/Song";
-import RNFS from "react-native-fs";
 import HomeIcon from "../icons/home";
 import EditIcon from "../icons/edit";
 import TrashIcon from "../icons/trash";
@@ -16,11 +15,13 @@ import React, { useEffect, ReactElement } from "react";
 import { storeData } from "../controllers/asyncStorage";
 import { setupPlayer } from "../controllers/trackPlayer";
 import { useNavigation } from "@react-navigation/native";
+import { setSongsAsync } from "../controllers/redux/songs";
 import { ScreenNavigationProp } from "../types/navigation";
 import SongsGroupList from "./SongsGroupList/SongsGroupList";
 import { AppDispatch, RootState } from "../types/redux/store";
 import { resetSong, setSong } from "../controllers/redux/song";
-import { TouchableOpacity, StatusBar, View, Button } from "react-native";
+import { TouchableOpacity, StatusBar, View } from "react-native";
+import { removeLikedSong } from "../controllers/redux/likedSongs";
 import { useSetSettings } from "../controllers/hooks/useSetSettings";
 import { getAppTheme, getBarStyleTheme } from "../controllers/themes";
 import { useSetSongsList } from "../controllers/hooks/useSetSongsList";
@@ -29,9 +30,6 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useControllTrack, useGetTrackStatus } from "../controllers/hooks/tracks";
 import { ISettings, changePlayerSettedStatus } from "../controllers/redux/settings";
 import TrackPlayer, { Event, useTrackPlayerEvents } from "react-native-track-player";
-import { removeLikedSong } from "../controllers/redux/likedSongs";
-import { setSongsAsync } from "../controllers/redux/songs";
-import { PERMISSIONS, RESULTS, check, request } from "react-native-permissions";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -80,12 +78,11 @@ function App(): ReactElement {
 }
 
 export default function Navigation(): ReactElement {
-	// const setSong = useSetSong();
 	const setSettings = useSetSettings();
+	const isPlaying = useGetTrackStatus();
 	const setSongsList = useSetSongsList();
 	const { stopTrack } = useControllTrack();
 	const dispatch: AppDispatch = useDispatch();
-	const trackPlayingStatus = useGetTrackStatus();
 	const navigation = useNavigation<ScreenNavigationProp>();
 	const { appTheme }: ISettings = useSelector((state: RootState) => state.settings);
 	const { songs, song, settings, likedSongs }: RootState = useSelector((state: RootState) => state);
@@ -130,16 +127,6 @@ export default function Navigation(): ReactElement {
 
 	return (
 		<>
-			<Button title="sdvsdv" onPress={async () => {
-				try {
-					const res = await check(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE);
-					if (res !== RESULTS.GRANTED) {
-						await request(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE);
-					}
-				} catch (error) {
-					console.log(error);
-				}
-			}}/>
 			<StatusBar
 				barStyle={getBarStyleTheme(settings.appTheme)}
 				backgroundColor={(getAppTheme(settings.appTheme)).background}
@@ -172,7 +159,7 @@ export default function Navigation(): ReactElement {
 						headerRight: (): ReactElement => {
 							return (
 								<TouchableOpacity onPress={async () => {
-									(trackPlayingStatus) && await stopTrack();
+									(isPlaying) && await stopTrack();
 									navigation.navigate("EditSong", song.data);
 								}}>
 									<EditIcon width={30} height={30} color={(getAppTheme(appTheme)).icon}/>
@@ -209,21 +196,21 @@ export default function Navigation(): ReactElement {
 								</TouchableOpacity>
 							);
 						},
-						headerRight: (): ReactElement => {
-							return (
-								<TouchableOpacity onPress={async () => {
-									dispatch(setSongsAsync(songs.filter((el: ISong) => el.url !== song.data.url)));
-									const id: number = likedSongs.findIndex((el: string) => el === song.data.url);
-									(id !== -1) && dispatch(removeLikedSong(id));
-									dispatch(resetSong());
+						// headerRight: (): ReactElement => {
+						// 	return (
+						// 		<TouchableOpacity onPress={async () => {
+						// 			dispatch(setSongsAsync(songs.filter((el: ISong) => el.url !== song.data.url)));
+						// 			const id: number = likedSongs.findIndex((el: string) => el === song.data.url);
+						// 			(id !== -1) && dispatch(removeLikedSong(id));
+						// 			dispatch(resetSong());
 
-									// delete from file sys
-									navigation.navigate("App");
-								}}>
-									<TrashIcon width={35} height={35} color={(getAppTheme(appTheme)).icon}/>
-								</TouchableOpacity>
-							);
-						},
+						// 			// delete from file sys
+						// 			navigation.navigate("App");
+						// 		}}>
+						// 			<TrashIcon width={35} height={35} color={(getAppTheme(appTheme)).icon}/>
+						// 		</TouchableOpacity>
+						// 	);
+						// },
 					}}
 					name="EditSong"
 					component={EditSong}

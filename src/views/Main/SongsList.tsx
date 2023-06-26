@@ -2,22 +2,25 @@ import SoundIcon from "../../icons/sound";
 import React, { ReactElement } from "react";
 import { ISong } from "../../types/redux/song";
 import { styles } from "../../models/theme/styles";
+import TrackPlayer from "react-native-track-player";
 import { getAppTheme } from "../../controllers/themes";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { ISettings } from "../../controllers/redux/settings";
 import { ScreenNavigationProp } from "../../types/navigation";
-import TrackPlayer, { State } from "react-native-track-player";
 import { AppDispatch, RootState } from "../../types/redux/store";
-import { resetSong, setSong } from "../../controllers/redux/song";
+import { useGetTrackStatus } from "../../controllers/hooks/tracks";
 import { useSortSongsList } from "../../controllers/hooks/useSortSongsList";
 import { View, FlatList, Text, Image, TouchableOpacity } from "react-native";
+import { IActiveSong, resetSong, setSong } from "../../controllers/redux/song";
 import { setSongsGroupListAsync } from "../../controllers/redux/songsGroupList";
 
 export default function SongsList(): ReactElement {
 	const songsList = useSortSongsList();
+	const isPlaying = useGetTrackStatus();
 	const dispatch: AppDispatch = useDispatch();
 	const navigation = useNavigation<ScreenNavigationProp>();
+	const song: IActiveSong = useSelector((state: RootState) => state.song);
 	const { appTheme, songsSortType }: ISettings = useSelector((state: RootState) => state.settings);
 
 	const getText = (text: string): string => {
@@ -30,11 +33,10 @@ export default function SongsList(): ReactElement {
 		return text;
 	};
 
-	const chooseSong = (song: ISong, id: number) => async (): Promise<void> => {
-		dispatch(setSong(song));
+	const chooseSong = (el: ISong, id: number) => async (): Promise<void> => {
+		dispatch(setSong(el));
 		await TrackPlayer.skip(id);
-		const trackState: State = await TrackPlayer.getState();
-		(trackState !== State.Playing) && TrackPlayer.play();
+		(!isPlaying) && await TrackPlayer.play();
 	};
 
 	if (Array.isArray(songsList)) {
@@ -60,7 +62,7 @@ export default function SongsList(): ReactElement {
 								</View>
 							</View>
 							{
-								(false) &&
+								(isPlaying && (song.data.url === item.url)) &&
 								<SoundIcon
 									width={28}
 									height={28}

@@ -1,6 +1,10 @@
 import TrackPlayer from "react-native-track-player";
 import { usePlaybackState, State } from "react-native-track-player";
 
+interface IControllTrack {
+	[key: string]: () => Promise<void>
+}
+
 export function useGetTrackStatus(): boolean {
 	const status = usePlaybackState();
 
@@ -11,11 +15,7 @@ export function useGetTrackStatus(): boolean {
 	}
 }
 
-interface ITest {
-	[key: string]: () => Promise<void>
-}
-
-export function useControllTrack(): ITest {
+export function useControllTrack(): IControllTrack {
 	const playTrack = async (): Promise<void> => {
 		try {
 			await TrackPlayer.play();
