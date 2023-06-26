@@ -3,6 +3,7 @@ import type { RouteProp } from "@react-navigation/native";
 import type { StackNavigationProp } from "@react-navigation/stack";
 
 type NavigationParamList = {
+    App: undefined;
     Song: undefined;
     EditSong: ISong;
     SongsGroupList: {

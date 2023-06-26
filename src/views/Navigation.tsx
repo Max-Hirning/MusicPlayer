@@ -1,14 +1,16 @@
 import Main from "./Main/Main";
 import Song from "./Song/Song";
+import RNFS from "react-native-fs";
 import HomeIcon from "../icons/home";
 import EditIcon from "../icons/edit";
+import TrashIcon from "../icons/trash";
 import EditSong from "./Edit/EditSong";
 import ShareIcon from "../icons/share";
 import { AppState } from "react-native";
 import ReturnIcon from "../icons/return";
 import Settings from "./Settings/Settings";
+import { ISong } from "../types/redux/song";
 import SettingsIcon from "../icons/settings";
-import { setSong } from "../controllers/redux/song";
 import { useDispatch, useSelector } from "react-redux";
 import React, { useEffect, ReactElement } from "react";
 import { storeData } from "../controllers/asyncStorage";
@@ -16,9 +18,9 @@ import { setupPlayer } from "../controllers/trackPlayer";
 import { useNavigation } from "@react-navigation/native";
 import { ScreenNavigationProp } from "../types/navigation";
 import SongsGroupList from "./SongsGroupList/SongsGroupList";
-import { useSetSong } from "../controllers/hooks/useSetSong";
 import { AppDispatch, RootState } from "../types/redux/store";
-import { TouchableOpacity, StatusBar, View } from "react-native";
+import { resetSong, setSong } from "../controllers/redux/song";
+import { TouchableOpacity, StatusBar, View, Button } from "react-native";
 import { useSetSettings } from "../controllers/hooks/useSetSettings";
 import { getAppTheme, getBarStyleTheme } from "../controllers/themes";
 import { useSetSongsList } from "../controllers/hooks/useSetSongsList";
@@ -26,7 +28,10 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useControllTrack, useGetTrackStatus } from "../controllers/hooks/tracks";
 import { ISettings, changePlayerSettedStatus } from "../controllers/redux/settings";
-import TrackPlayer, { Event, useProgress, useTrackPlayerEvents } from "react-native-track-player";
+import TrackPlayer, { Event, useTrackPlayerEvents } from "react-native-track-player";
+import { removeLikedSong } from "../controllers/redux/likedSongs";
+import { setSongsAsync } from "../controllers/redux/songs";
+import { PERMISSIONS, RESULTS, check, request } from "react-native-permissions";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -87,7 +92,6 @@ export default function Navigation(): ReactElement {
 
 	useTrackPlayerEvents([Event.PlaybackTrackChanged], async (el: any) => {
 		const res = await TrackPlayer.getTrack(el.nextTrack);
-		console.log(res);
 		(res) && dispatch(setSong(res as ISong));
 	});
 
@@ -126,6 +130,16 @@ export default function Navigation(): ReactElement {
 
 	return (
 		<>
+			<Button title="sdvsdv" onPress={async () => {
+				try {
+					const res = await check(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE);
+					if (res !== RESULTS.GRANTED) {
+						await request(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE);
+					}
+				} catch (error) {
+					console.log(error);
+				}
+			}}/>
 			<StatusBar
 				barStyle={getBarStyleTheme(settings.appTheme)}
 				backgroundColor={(getAppTheme(settings.appTheme)).background}
@@ -192,6 +206,21 @@ export default function Navigation(): ReactElement {
 							return (
 								<TouchableOpacity onPress={() => navigation.goBack()}>
 									<ReturnIcon width={50} height={50} color={(getAppTheme(appTheme)).icon}/>
+								</TouchableOpacity>
+							);
+						},
+						headerRight: (): ReactElement => {
+							return (
+								<TouchableOpacity onPress={async () => {
+									dispatch(setSongsAsync(songs.filter((el: ISong) => el.url !== song.data.url)));
+									const id: number = likedSongs.findIndex((el: string) => el === song.data.url);
+									(id !== -1) && dispatch(removeLikedSong(id));
+									dispatch(resetSong());
+
+									// delete from file sys
+									navigation.navigate("App");
+								}}>
+									<TrashIcon width={35} height={35} color={(getAppTheme(appTheme)).icon}/>
 								</TouchableOpacity>
 							);
 						},
