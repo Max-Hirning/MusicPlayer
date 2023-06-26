@@ -11,9 +11,9 @@ import { ScreenNavigationProp } from "../../types/navigation";
 import { AppDispatch, RootState } from "../../types/redux/store";
 import { useGetTrackStatus } from "../../controllers/hooks/tracks";
 import { useSortSongsList } from "../../controllers/hooks/useSortSongsList";
-import { View, FlatList, Text, Image, TouchableOpacity } from "react-native";
 import { IActiveSong, resetSong, setSong } from "../../controllers/redux/song";
 import { setSongsGroupListAsync } from "../../controllers/redux/songsGroupList";
+import { View, FlatList, Text, Image, TouchableOpacity, ScrollView } from "react-native";
 
 export default function SongsList(): ReactElement {
 	const songsList = useSortSongsList();
@@ -41,44 +41,50 @@ export default function SongsList(): ReactElement {
 
 	if (Array.isArray(songsList)) {
 		return (
-			<FlatList
-				data={songsList}
-				className="mt-4 mb-28"
-				keyExtractor={(_: ISong, index: number): string => index.toString()}
-				renderItem={({ item, index }: { item: ISong, index: number }): ReactElement => {
-					return (
-						<TouchableOpacity
-							onPress={chooseSong(item, index)}
-							className="flex flex-row items-center mx-6 my-3 justify-between"
-						>
-							<View className="flex flex-row items-center">
-								<Image
-									className="w-14 h-14 rounded-xl"
-									source={{uri: item.artwork}}
-								/>
-								<View className="ml-3">
-									<Text style={[styles.fontFamilyText, {color: (getAppTheme(appTheme)).text}]}>{getText(item.title)}</Text>
-									<Text style={[styles.fontFamilyText, {color: (getAppTheme(appTheme)).text}]}>{getText(item.album)}</Text>
+			<ScrollView className="mt-4 mb-28">
+				{
+					songsList.map((item: ISong, index: number): ReactElement => {
+						return (
+							<TouchableOpacity
+								key={item.url}
+								onPress={chooseSong(item, index)}
+								className="flex flex-row items-center mx-6 my-3 justify-between"
+							>
+								<View className="flex flex-row items-center">
+									<Image
+										source={{uri: item.artwork}}
+										className="w-14 h-14 rounded-xl"
+									/>
+									<View className="ml-3">
+										<Text style={[styles.fontFamilyText, {color: (getAppTheme(appTheme)).text}]}>{getText(item.title)}</Text>
+										<Text style={[styles.fontFamilyText, {color: (getAppTheme(appTheme)).text}]}>{getText(item.album)}</Text>
+									</View>
 								</View>
-							</View>
-							{
-								(isPlaying && (song.data.url === item.url)) &&
+								{
+									(isPlaying && (song.data.url === item.url)) &&
 								<SoundIcon
 									width={28}
 									height={28}
 									color={(getAppTheme(appTheme)).icon}
 								/>
-							}
-						</TouchableOpacity>
-					);
-				}}
-			/>
+								}
+							</TouchableOpacity>
+						);
+					})
+				}
+			</ScrollView>
 		);
 	} else {
 		return (
 			<FlatList
-				className="mt-4 mb-28"
+				numColumns={2}
+				horizontal={false}
+				className="mt-4 mb-10"
+				contentContainerStyle={{
+					alignItems: "center",
+				}}
 				data={Object.entries(songsList)}
+				keyExtractor={(item: [string, ISong[]]): string => item[0].toString()}
 				renderItem={({ item }: { item: [string, ISong[]] }): ReactElement => {
 					return (
 						<TouchableOpacity
@@ -88,17 +94,16 @@ export default function SongsList(): ReactElement {
 								navigation.navigate("SongsGroupList", { title: `${songsSortType.slice(0, songsSortType.length - 1)}: ${item[0].toLowerCase()}` });
 							}}
 							style={{ backgroundColor: getAppTheme(appTheme).playerBackground }}
-							className="flex-col items-center justify-between w-40 h-40 py-2 flex items-center mx-6 my-3 justify-between rounded-xl"
+							className="flex-col items-center justify-between w-40 h-40 py-2 flex items-center mx-3 my-3 justify-between rounded-xl"
 						>
 							<Image
 								className="w-28 h-28 rounded-xl"
 								source={{uri: item[1][0].artwork}}
 							/>
-							<Text>{item[0]}</Text>
+							<Text style={[{color: getAppTheme(appTheme).text}, styles.fontFamilyText]}>{item[0]}</Text>
 						</TouchableOpacity>
 					);
 				}}
-				keyExtractor={(_: [string, ISong[]], index: number): string => index.toString()}
 			/>
 		);
 	}

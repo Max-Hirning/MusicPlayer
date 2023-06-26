@@ -24,17 +24,17 @@ export default function EditSong(): ReactElement {
 		setData(params);
 	}, [params]);
 
-	const saveTrack = (): void => {
+	const saveTrack = async (): Promise<void> => {
 		const newSong: ISong = {...data, date: (new Date()).toJSON().split("T")[0]};
 		const EditSongId = songs.findIndex((el: ISong) => el.url === newSong.url);
 
 		const state = [ ...songs ];
 		state[EditSongId] = newSong;
 
-		dispatch(setSongsAsync(state));
+		await dispatch(setSongsAsync(state));
 		dispatch(setSong(newSong));
 
-		navigation.goBack();
+		navigation.navigate("App");
 	};
 
 	return (
@@ -70,8 +70,8 @@ export default function EditSong(): ReactElement {
 			</View>
 			<TouchableOpacity
 				onPress={saveTrack}
-				className="px-16 py-2 rounded-3xl my-10"
-				style={{backgroundColor: getAppTheme(appTheme).playerBackground}}
+				className="px-16 py-2 rounded-3xl my-10 border-2"
+				style={{backgroundColor: getAppTheme(appTheme).playerBackground, borderColor: getAppTheme(appTheme).text}}
 			>
 				<Text
 					className="text-xl"

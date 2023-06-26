@@ -3,6 +3,7 @@ export enum darkTheme {
   icon = "#C7C7C7",
   background = "#1E1E1E",
   progressBar = "#FFFFFF",
+  inactiveIcon = "#C7C7C7",
   playerBackground = "#161616",
 }
 
@@ -11,6 +12,7 @@ export enum lightTheme {
   icon = "#212121",
   background = "#DFDEDE",
   progressBar = "#000000",
+  inactiveIcon = "#DFDEDE",
   playerBackground = "#ABABAB",
 }
 

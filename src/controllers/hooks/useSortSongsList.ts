@@ -10,27 +10,28 @@ interface ITest {
 }
 
 export function useSortSongsList(): ISong[]|ITest {
+	const prevSongsSortType = useRef("");
 	const songsList = useRef<ISong[]|ITest>([]);
 	const songs: ISong[] = useSelector((state: RootState) => state.songs);
 	const likedSongs: string[] = useSelector((state: RootState) => state.likedSongs);
 	const { songsSortType, isPlayerSetted }: ISettings = useSelector((state: RootState) => state.settings);
 
-	useMemo(() => {
-		if (isPlayerSetted) {
-			let list: ISong[] = [];
+	useMemo(async () => {
+		if (isPlayerSetted && (songsSortType !== prevSongsSortType.current)) {
 			switch (songsSortType.toLowerCase()) {
 			case "favorites":
-				list = songs.filter((song: ISong) => likedSongs.some((el: string) => el === song.url));
+				const list = songs.filter((song: ISong) => likedSongs.some((el: string) => el === song.url));
 				songsList.current = list;
 				setTracks(list);
 				break;
 			case "genries":
 				songsList.current = songs.reduce((res: ITest, el: ISong): ITest => {
-					if (el.genre !== "") {
-						if (res[el.genre]) {
-							res[el.genre].push(el);
+					const key =  el.genre.toLowerCase();
+					if (key !== "") {
+						if (res[key]) {
+							res[key].push(el);
 						} else {
-							res[el.genre] = [el];
+							res[key] = [el];
 						}
 					} else {
 						if (res["No genre"]) {
@@ -44,11 +45,12 @@ export function useSortSongsList(): ISong[]|ITest {
 				break;
 			case "artists":
 				songsList.current = songs.reduce((res: ITest, el: ISong): ITest => {
-					if (el.artist !== "") {
-						if (res[el.artist]) {
-							res[el.artist].push(el);
+					const key =  el.artist.toLowerCase();
+					if (key !== "") {
+						if (res[key]) {
+							res[key].push(el);
 						} else {
-							res[el.artist] = [el];
+							res[key] = [el];
 						}
 					} else {
 						if (res["No artist"]) {
@@ -62,11 +64,12 @@ export function useSortSongsList(): ISong[]|ITest {
 				break;
 			case "albums":
 				songsList.current = songs.reduce((res: ITest, el: ISong): ITest => {
-					if (el.album !== "") {
-						if (res[el.album]) {
-							res[el.album].push(el);
+					const key =  el.album.toLowerCase();
+					if (key !== "") {
+						if (res[key]) {
+							res[key].push(el);
 						} else {
-							res[el.album] = [el];
+							res[key] = [el];
 						}
 					} else {
 						if (res["No album"]) {
@@ -79,10 +82,10 @@ export function useSortSongsList(): ISong[]|ITest {
 				}, {});
 				break;
 			default:
-				list = songs;
-				setTracks(list);
+				setTracks(songs);
 				songsList.current = songs;
 			}
+			prevSongsSortType.current = songsSortType;
 		}
 	}, [songsSortType, likedSongs, songs, isPlayerSetted]);
 

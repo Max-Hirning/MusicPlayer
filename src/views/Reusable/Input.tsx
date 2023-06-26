@@ -18,15 +18,16 @@ export default function Input({ value, title, placeholder, changeFunc }: Props):
 	return (
 		<View>
 			<Text
-				style={{backgroundColor: getAppTheme(appTheme).background }}
-				className="ml-2 text-base relative top-2 text-center z-10 w-24"
+				className="ml-2 text-base relative top-2 text-center z-10"
+				style={{backgroundColor: getAppTheme(appTheme).background, color: getAppTheme(appTheme).text, width: 110}}
 			>{title}</Text>
 			<TextInput
 				value={value}
 				placeholder={placeholder}
 				onChangeText={changeFunc}
 				className="rounded-xl border-2 px-4 text-lg"
-				style={{borderColor: getAppTheme(appTheme).text}}
+				placeholderTextColor={getAppTheme(appTheme).text}
+				style={{borderColor: getAppTheme(appTheme).text, color: getAppTheme(appTheme).text}}
 			/>
 		</View>
 	);

@@ -1,28 +1,20 @@
 import SongActions from "./SongActions";
+import { useSelector } from "react-redux";
 import React, { ReactElement } from "react";
-import { ISong } from "../../types/redux/song";
 import { View, Text, Image } from "react-native";
 import { styles } from "../../models/theme/styles";
+import { RootState } from "../../types/redux/store";
 import Slider from "@react-native-community/slider";
-import { useDispatch, useSelector } from "react-redux";
 import { getAppTheme } from "../../controllers/themes";
 import SongController from "../Reusable/SongController";
+import { IActiveSong } from "../../controllers/redux/song";
 import { ISettings } from "../../controllers/redux/settings";
-import { AppDispatch, RootState } from "../../types/redux/store";
-import { IActiveSong, setSong } from "../../controllers/redux/song";
-import TrackPlayer, { Event, useProgress, useTrackPlayerEvents } from "react-native-track-player";
+import TrackPlayer, { useProgress } from "react-native-track-player";
 
 export default function Song(): ReactElement {
 	const progress = useProgress();
-	const dispatch: AppDispatch = useDispatch();
 	const { data }: IActiveSong = useSelector((state: RootState) => state.song);
 	const { appTheme }: ISettings = useSelector((state: RootState) => state.settings);
-
-	// useTrackPlayerEvents([Event.PlaybackTrackChanged], async (el: any) => {
-	// 	const res = await TrackPlayer.getTrack(el.nextTrack);
-	// 	console.log(res);
-	// 	(res) && dispatch(setSong(res as ISong));
-	// });
 
 	const getText = (text: string): string => {
 		if (text.length === 0) {

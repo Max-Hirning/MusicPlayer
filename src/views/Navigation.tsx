@@ -5,6 +5,7 @@ import EditIcon from "../icons/edit";
 import TrashIcon from "../icons/trash";
 import EditSong from "./Edit/EditSong";
 import ShareIcon from "../icons/share";
+import Share from "react-native-share";
 import { AppState } from "react-native";
 import ReturnIcon from "../icons/return";
 import Settings from "./Settings/Settings";
@@ -20,13 +21,13 @@ import { ScreenNavigationProp } from "../types/navigation";
 import SongsGroupList from "./SongsGroupList/SongsGroupList";
 import { AppDispatch, RootState } from "../types/redux/store";
 import { resetSong, setSong } from "../controllers/redux/song";
-import { TouchableOpacity, StatusBar, View } from "react-native";
 import { removeLikedSong } from "../controllers/redux/likedSongs";
 import { useSetSettings } from "../controllers/hooks/useSetSettings";
 import { getAppTheme, getBarStyleTheme } from "../controllers/themes";
 import { useSetSongsList } from "../controllers/hooks/useSetSongsList";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { TouchableOpacity, StatusBar, View, AppStateStatus } from "react-native";
 import { useControllTrack, useGetTrackStatus } from "../controllers/hooks/tracks";
 import { ISettings, changePlayerSettedStatus } from "../controllers/redux/settings";
 import TrackPlayer, { Event, useTrackPlayerEvents } from "react-native-track-player";
@@ -51,8 +52,11 @@ function App(): ReactElement {
 				options={{
 					tabBarIcon: ({ focused }): ReactElement => {
 						return (
-							<View className={`${focused ? "border-b-2" : ""}`}>
-								<HomeIcon width={30} height={30} color={(focused) ? (getAppTheme(appTheme)).icon : (getAppTheme(appTheme)).background}/>
+							<View
+								className={`${focused ? "border-b-2" : ""}`}
+								style={{borderColor: getAppTheme(appTheme).icon}}
+							>
+								<HomeIcon width={30} height={30} color={(focused) ? (getAppTheme(appTheme)).icon : (getAppTheme(appTheme)).inactiveIcon}/>
 							</View>
 						);
 					},
@@ -64,8 +68,11 @@ function App(): ReactElement {
 				options={{
 					tabBarIcon: ({ focused }): ReactElement => {
 						return (
-							<View className={`${focused ? "border-b-2" : ""}`}>
-								<SettingsIcon width={30} height={30} color={(focused) ? (getAppTheme(appTheme)).icon : (getAppTheme(appTheme)).background}/>
+							<View
+								className={`${focused ? "border-b-2" : ""}`}
+								style={{borderColor: getAppTheme(appTheme).icon}}
+							>
+								<SettingsIcon width={30} height={30} color={(focused) ? (getAppTheme(appTheme)).icon : (getAppTheme(appTheme)).inactiveIcon}/>
 							</View>
 						);
 					},
@@ -93,15 +100,14 @@ export default function Navigation(): ReactElement {
 	});
 
 	useEffect(() => {
-		const subscription = AppState.addEventListener("change", nextAppState => {
+		const subscription = AppState.addEventListener("change", async (nextAppState: AppStateStatus) => {
 			settingAppUp(nextAppState);
 		});
-
 		return () => {
 			subscription.remove();
 		};
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [songs, song, settings, likedSongs, setSongsList, setSong, setSettings]);
+	}, [songs, settings, likedSongs]);
 
 	async function settingAppUp(appStatus: string): Promise<void> {
 		try {
@@ -111,12 +117,8 @@ export default function Navigation(): ReactElement {
 				dispatch(changePlayerSettedStatus(isPlayerSettedUp));
 				setSongsList(isPlayerSettedUp);
 				setSettings();
-				// setSong();
 			} else {
-				if (song.exists) {
-					storeData("song", JSON.stringify(song.data));
-				}
-				// storeData("songs", JSON.stringify(songs));
+				storeData("songs", JSON.stringify(songs));
 				storeData("settings", JSON.stringify(settings));
 				storeData("likedSongs", JSON.stringify(likedSongs));
 			}
@@ -220,7 +222,18 @@ export default function Navigation(): ReactElement {
 					options={{
 						headerRight: (): ReactElement => {
 							return (
-								<TouchableOpacity onPress={() => console.log("sdv")}>
+								<TouchableOpacity onPress={async () => {
+									try {
+										const res = await Share.open({
+											failOnCancel: false,
+											showAppsToView: true,
+											url: "https://www.youtube.com/",
+										});
+										console.log(res);
+									} catch (error) {
+										console.log(error);
+									}
+								}}>
 									<ShareIcon width={25} height={25} color={(getAppTheme(appTheme)).icon}/>
 								</TouchableOpacity>
 							);
