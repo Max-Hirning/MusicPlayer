@@ -6,4 +6,5 @@ export interface ISong {
 	title: string;
 	artist: string;
 	artwork: string;
+	[key: string]: string;
 }
