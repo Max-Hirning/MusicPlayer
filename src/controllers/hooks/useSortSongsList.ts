@@ -9,18 +9,17 @@ interface ISongsObj {
 	[key: string]: ISong[];
 }
 
-export function useSortSongsList(): ISong[]|ISongsObj {
+interface IReturnedData {
+	emptyMessage: string;
+	data: ISong[]|ISongsObj;
+}
+
+export function useSortSongsList(): IReturnedData {
+	const emptyMessage = useRef<string>("");
 	const songsList = useRef<ISong[]|ISongsObj>([]);
 	const songs: ISong[] = useSelector((state: RootState) => state.songs);
 	const likedSongs: string[] = useSelector((state: RootState) => state.likedSongs);
 	const { songsSortType, isPlayerSetted }: ISettings = useSelector((state: RootState) => state.settings);
-
-	useMemo(async () => {
-		if (isPlayerSetted && songsSortType.toLowerCase() === "favorites") {
-			songsList.current = getFavoritesTracksList();
-		}
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [songsSortType, likedSongs, isPlayerSetted]);
 
 	useMemo(async () => {
 		if (isPlayerSetted) {
@@ -44,18 +43,28 @@ export function useSortSongsList(): ISong[]|ISongsObj {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [songsSortType, songs, isPlayerSetted]);
 
+	useMemo(async () => {
+		if (isPlayerSetted && songsSortType.toLowerCase() === "favorites") {
+			songsList.current = getFavoritesTracksList();
+		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [songsSortType, likedSongs, isPlayerSetted]);
+
 	function getTracksList(): ISong[] {
+		emptyMessage.current = "You have no tracks";
 		setTracks(songs);
 		return songs;
 	}
 
 	function getFavoritesTracksList(): ISong[] {
 		const list = songs.filter((song: ISong) => likedSongs.some((el: string) => el === song.url));
+		emptyMessage.current = "You have no favorite tracks";
 		setTracks(list);
 		return list;
 	}
 
 	function getList(defaultKey: string, keyForEmpty: string): ISongsObj {
+		emptyMessage.current = "You have no tracks";
 		return songs.reduce((res: ISongsObj, el: ISong): ISongsObj => {
 			const key =  el[defaultKey]?.toLowerCase();
 			if (key !== "") {
@@ -75,5 +84,8 @@ export function useSortSongsList(): ISong[]|ISongsObj {
 		}, {});
 	}
 
-	return songsList.current;
+	return {
+		data: songsList.current,
+		emptyMessage: emptyMessage.current,
+	};
 }
