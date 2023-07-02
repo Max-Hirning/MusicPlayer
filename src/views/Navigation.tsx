@@ -1,88 +1,31 @@
 import Main from "./Main/Main";
 import Song from "./Song/Song";
-import HomeIcon from "../icons/home";
 import EditIcon from "../icons/edit";
-import TrashIcon from "../icons/trash";
 import EditSong from "./Edit/EditSong";
 import ShareIcon from "../icons/share";
 import Share from "react-native-share";
 import { AppState } from "react-native";
 import ReturnIcon from "../icons/return";
-import Settings from "./Settings/Settings";
 import { ISong } from "../types/redux/song";
-import SettingsIcon from "../icons/settings";
+import { setSong } from "../controllers/redux/song";
 import { useDispatch, useSelector } from "react-redux";
 import React, { useEffect, ReactElement } from "react";
 import { storeData } from "../controllers/asyncStorage";
 import { setupPlayer } from "../controllers/trackPlayer";
 import { useNavigation } from "@react-navigation/native";
-import { setSongsAsync } from "../controllers/redux/songs";
 import { ScreenNavigationProp } from "../types/navigation";
 import SongsGroupList from "./SongsGroupList/SongsGroupList";
 import { AppDispatch, RootState } from "../types/redux/store";
-import { resetSong, setSong } from "../controllers/redux/song";
-import { removeLikedSong } from "../controllers/redux/likedSongs";
 import { useSetSettings } from "../controllers/hooks/useSetSettings";
 import { getAppTheme, getBarStyleTheme } from "../controllers/themes";
 import { useSetSongsList } from "../controllers/hooks/useSetSongsList";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { TouchableOpacity, StatusBar, View, AppStateStatus } from "react-native";
+import { TouchableOpacity, StatusBar, AppStateStatus } from "react-native";
 import { useControllTrack, useGetTrackStatus } from "../controllers/hooks/tracks";
 import { ISettings, changePlayerSettedStatus } from "../controllers/redux/settings";
 import TrackPlayer, { Event, useTrackPlayerEvents } from "react-native-track-player";
 
-const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
-
-function App(): ReactElement {
-	const { appTheme }: ISettings = useSelector((state: RootState) => state.settings);
-
-	return (
-		<Tab.Navigator
-			screenOptions={{
-				tabBarStyle: {
-					backgroundColor: (getAppTheme(appTheme)).playerBackground,
-				},
-				headerShown: false,
-				tabBarShowLabel: false,
-			}}
-		>
-			<Tab.Screen
-				options={{
-					tabBarIcon: ({ focused }): ReactElement => {
-						return (
-							<View
-								className={`${focused ? "border-b-2" : ""}`}
-								style={{borderColor: getAppTheme(appTheme).icon}}
-							>
-								<HomeIcon width={30} height={30} color={(focused) ? (getAppTheme(appTheme)).icon : (getAppTheme(appTheme)).inactiveIcon}/>
-							</View>
-						);
-					},
-				}}
-				name="SongsList"
-				component={Main}
-			/>
-			<Tab.Screen
-				options={{
-					tabBarIcon: ({ focused }): ReactElement => {
-						return (
-							<View
-								className={`${focused ? "border-b-2" : ""}`}
-								style={{borderColor: getAppTheme(appTheme).icon}}
-							>
-								<SettingsIcon width={30} height={30} color={(focused) ? (getAppTheme(appTheme)).icon : (getAppTheme(appTheme)).inactiveIcon}/>
-							</View>
-						);
-					},
-				}}
-				name="Settings"
-				component={Settings}
-			/>
-		</Tab.Navigator>
-	);
-}
 
 export default function Navigation(): ReactElement {
 	const setSettings = useSetSettings();
@@ -198,21 +141,6 @@ export default function Navigation(): ReactElement {
 								</TouchableOpacity>
 							);
 						},
-						// headerRight: (): ReactElement => {
-						// 	return (
-						// 		<TouchableOpacity onPress={async () => {
-						// 			dispatch(setSongsAsync(songs.filter((el: ISong) => el.url !== song.data.url)));
-						// 			const id: number = likedSongs.findIndex((el: string) => el === song.data.url);
-						// 			(id !== -1) && dispatch(removeLikedSong(id));
-						// 			dispatch(resetSong());
-
-						// 			// delete from file sys
-						// 			navigation.navigate("App");
-						// 		}}>
-						// 			<TrashIcon width={35} height={35} color={(getAppTheme(appTheme)).icon}/>
-						// 		</TouchableOpacity>
-						// 	);
-						// },
 					}}
 					name="EditSong"
 					component={EditSong}
@@ -239,7 +167,7 @@ export default function Navigation(): ReactElement {
 							);
 						},
 					}}
-					component={App}
+					component={Main}
 				/>
 			</Stack.Navigator>
 		</>
